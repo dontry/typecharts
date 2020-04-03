@@ -1,13 +1,14 @@
 import fruits from "../fixtures/fruits.json";
 import { aggregateDataByValueParam } from "../../utils/MiscUtil";
 import { DataParam } from "@/types/Param";
+import { NUMBER_AGGREGATION } from "@/types/Aggregation";
 
 describe("aggregateValues", () => {
   it("should return count value", () => {
     const valueParam: DataParam = {
       title: "amount",
       type: "number",
-      aggregation: "count"
+      aggregation: NUMBER_AGGREGATION.COUNT,
     };
     expect(aggregateDataByValueParam(fruits, valueParam)).toBe(6);
   });
@@ -16,7 +17,7 @@ describe("aggregateValues", () => {
     const valueParam: DataParam = {
       title: "amount",
       type: "number",
-      aggregation: "min"
+      aggregation: NUMBER_AGGREGATION.MIN,
     };
     expect(aggregateDataByValueParam(fruits, valueParam)).toBe(10);
   });
@@ -25,7 +26,7 @@ describe("aggregateValues", () => {
     const valueParam: DataParam = {
       title: "amount",
       type: "number",
-      aggregation: "max"
+      aggregation: NUMBER_AGGREGATION.MAX,
     };
     expect(aggregateDataByValueParam(fruits, valueParam)).toBe(60);
   });
@@ -34,7 +35,7 @@ describe("aggregateValues", () => {
     const valueParam: DataParam = {
       title: "amount",
       type: "number",
-      aggregation: "mean"
+      aggregation: NUMBER_AGGREGATION.MEAN,
     };
     expect(aggregateDataByValueParam(fruits, valueParam)).toBe(35);
   });
@@ -43,7 +44,7 @@ describe("aggregateValues", () => {
     const valueParam: DataParam = {
       title: "amount",
       type: "number",
-      aggregation: "sum"
+      aggregation: NUMBER_AGGREGATION.SUM,
     };
     expect(aggregateDataByValueParam(fruits, valueParam)).toBe(210);
   });
@@ -51,7 +52,7 @@ describe("aggregateValues", () => {
   it("should return sum value when aggregation is undefined", () => {
     const valueParam: DataParam = {
       title: "amount",
-      type: "number"
+      type: "number",
     };
     expect(aggregateDataByValueParam(fruits, valueParam)).toBe(210);
   });
@@ -60,7 +61,8 @@ describe("aggregateValues", () => {
     const valueParam: DataParam = {
       title: "amount",
       type: "number",
-      aggregation: "invalid"
+      // @ts-ignore
+      aggregation: "invalid",
     };
     expect(aggregateDataByValueParam(fruits, valueParam)).toBeNaN();
   });
@@ -69,7 +71,7 @@ describe("aggregateValues", () => {
     const valueParam: DataParam = {
       title: "amount",
       type: "number",
-      aggregation: "min"
+      aggregation: NUMBER_AGGREGATION.MIN,
     };
     const missingValueFruits = [...fruits, { name: "pineapple" }];
     expect(aggregateDataByValueParam(missingValueFruits, valueParam)).toBe(10);

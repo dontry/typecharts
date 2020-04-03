@@ -1,11 +1,16 @@
 import fruits from "../fixtures/fruits.json";
 import { CategoryDataSource } from "@/components/DataSource.ts/CategoryDataSource";
 import { DataParam } from "@/types/Param";
+import { NUMBER_AGGREGATION } from "@/types/Aggregation";
 describe("CategoryDataSource", () => {
   it("should return 3 arrays", () => {
     const valueParams: DataParam[] = [
-      { title: "amount", aggregation: "count", type: "number" },
-      { title: "price", aggregation: "mean", type: "number" }
+      {
+        title: "amount",
+        aggregation: NUMBER_AGGREGATION.COUNT,
+        type: "number",
+      },
+      { title: "price", aggregation: NUMBER_AGGREGATION.MEAN, type: "number" },
     ];
     const dimensionParam: DataParam = { title: "country", type: "string" };
     const sortBy = "country";
@@ -13,7 +18,7 @@ describe("CategoryDataSource", () => {
       fruits,
       valueParams,
       dimensionParam,
-      sortBy
+      sortBy,
     );
     const dataArray = dataSource.transformToDataArray();
 

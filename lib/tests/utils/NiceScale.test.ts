@@ -32,4 +32,12 @@ describe("NiceScale", () => {
     expect(min).toBe(-1000);
     expect(max).toBe(11000);
   });
+
+  it("should return [NaN, NaN]", () => {
+    const niceScale = new NiceScale(-Infinity, 10000);
+    const [min, max] = niceScale.calculate();
+
+    expect(min).toBeNaN();
+    expect(max).toBeNaN();
+  });
 });

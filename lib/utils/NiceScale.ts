@@ -8,23 +8,23 @@ export class NiceScale {
   private maxTicks: number = this.DEFAULT_MAX_TICKS;
   private tickSpacing: number = this.DEFAULT_TICK_SPACING;
   private range: number | undefined;
-  private niceMin: number = 0;
-  private niceMax: number = 0;
-  private minRange: number = 0;
-  private maxRange: number = 0;
+  private niceMin = 0;
+  private niceMax = 0;
+  private minRange = 0;
+  private maxRange = 0;
 
   constructor(
     private minPoint: number,
     private maxPoint: number,
     private onZero: boolean = false,
-    private factor: number = 0.5
+    private factor: number = 0.5,
   ) {}
 
   public calculate(): [Minmax, Minmax] {
     this.range = this.getNiceNumber(this.maxPoint - this.minPoint, false);
     this.tickSpacing = this.getNiceNumber(
       this.range / (this.maxTicks - 1),
-      true
+      true,
     );
     this.niceMin =
       Math.floor(this.minPoint / this.tickSpacing) * this.tickSpacing;
@@ -52,19 +52,19 @@ export class NiceScale {
     this.tickSpacing = tickSpacing;
   }
 
-  public getMaxRange() {
-    return this.getMaxRange;
+  public getMaxRange(): number {
+    return this.maxRange;
   }
 
-  public getMinRange() {
-    return this.getMinRange;
+  public getMinRange(): number {
+    return this.minRange;
   }
 
-  public getNiceMax() {
+  public getNiceMax(): number {
     return this.niceMax;
   }
 
-  public getNiceMin() {
+  public getNiceMin(): number {
     return this.niceMin;
   }
 

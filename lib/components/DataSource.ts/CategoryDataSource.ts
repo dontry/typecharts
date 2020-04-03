@@ -10,7 +10,7 @@ export class CategoryDataSource extends AbstractDataSource {
     protected data: DataItem[],
     private valueParams: DataParam[],
     dimensonParam: DataParam,
-    private orderBy?: string
+    private orderBy?: string,
   ) {
     super(data);
     this.dimensionName = dimensonParam.title;
@@ -21,23 +21,21 @@ export class CategoryDataSource extends AbstractDataSource {
       groupBy(this.dimensionName),
       values,
       sortBy(this.getSortAttribute.bind(this)),
-      map(this.getAggregationValues.bind(this))
+      map(this.getAggregationValues.bind(this)),
     );
     return chain(this.data);
   }
 
   private getSortAttribute(array: DataItem[]): DataValue {
-    return !!this.orderBy
-      ? array[0][this.orderBy]
-      : array[0][this.dimensionName];
+    return this.orderBy ? array[0][this.orderBy] : array[0][this.dimensionName];
   }
 
   private getAggregationValues(array: DataItem[]): DataItem {
-    let aggregationValues = this.valueParams.reduce((acc, valueParam) => {
+    const aggregationValues = this.valueParams.reduce((acc, valueParam) => {
       if (valueParam.aggregation) {
         return {
           ...acc,
-          [valueParam.title]: aggregateDataByValueParam(array, valueParam)
+          [valueParam.title]: aggregateDataByValueParam(array, valueParam),
         };
       } else {
         return acc;
@@ -46,7 +44,7 @@ export class CategoryDataSource extends AbstractDataSource {
 
     return {
       [this.dimensionName]: array[0][this.dimensionName],
-      ...aggregationValues
+      ...aggregationValues,
     };
   }
 }

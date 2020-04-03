@@ -1,11 +1,13 @@
-import { IComponentBuilder } from "./IComponentBuilder";
+import { ComponentBuilderInterface } from "./ComponentBuilderInterface";
 import { capitalize, isUndefined } from "lodash";
 import { AbstractComponent } from "./AbstractComponent";
 
-export abstract class AbstractComponentBuilder<T, K>
-  implements IComponentBuilder<T, K> {
+export abstract class AbstractComponentBuilder<
+  T,
+  K extends AbstractComponent<T>
+> implements ComponentBuilderInterface<T, K> {
   protected component!: K;
-  constructor(protected config?: Object) {}
+  constructor(protected config?: Record<string, any>) {}
   public abstract reset(): void;
   public build(): K | null {
     if (isUndefined(this.config)) return null;
