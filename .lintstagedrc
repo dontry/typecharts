@@ -1,0 +1,6 @@
+ {
+  "**/*.+(js|jsx|json|yml|yaml|css|less|scss|ts|tsx|md|graphql|mdx)": [
+    "jest --findRelatedTests",
+    "git add",
+  ],
+}
