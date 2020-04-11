@@ -1,6 +1,13 @@
 /* eslint-disable no-undef */
 //jest-environment-jsdom is browser env containing a window object
 module.exports = {
+  globals: {
+    "ts-jest": {
+      diagnostics: {
+        warnOnly: true,
+      },
+    },
+  },
   preset: "ts-jest",
   collectCoverageFrom: ["<rootDir>/src/**/*.ts"],
   testPathIgnorePatterns: ["<rootDir>/node_modules/"],

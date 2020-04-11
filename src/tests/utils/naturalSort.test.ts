@@ -1,4 +1,4 @@
-import { naturalSort } from "src/utils/misc";
+import { naturalSort } from "@/utils/misc";
 
 describe("natural sort", () => {
   it("should return number in correct order", () => {

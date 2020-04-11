@@ -1,4 +1,4 @@
-import { NiceScale } from "src/utils/NiceScale";
+import { NiceScale } from "@/utils/NiceScale";
 
 describe("NiceScale", () => {
   it("should return [-10, 110]", () => {

@@ -1,5 +1,5 @@
 import fruits from "../fixtures/fruits.json";
-import { aggregateDataByValueParam } from "../../utils/misc";
+import { aggregateDataByValueParam } from "@/utils/misc";
 import { DataParam } from "@/types/Param";
 import { NUMBER_AGGREGATION } from "@/types/Aggregation";
 
