@@ -2,13 +2,13 @@
 //jest-environment-jsdom is browser env containing a window object
 module.exports = {
   preset: "ts-jest",
-  collectCoverageFrom: ["<rootDir>/lib/**/*.ts"],
+  collectCoverageFrom: ["<rootDir>/src/**/*.ts"],
   testPathIgnorePatterns: ["<rootDir>/node_modules/"],
   modulePathIgnorePatterns: ["<rootDir>/node_modules/"],
   moduleNameMapper: {
-    "^@/types/(.*)$": "<rootDir>/lib/types/$1",
-    "^@/components/(.*)$": "<rootDir>/lib/components/$1",
-    "^@/utils/(.*)$": "<rootDir>/lib/utils/$1",
+    "^@/types/(.*)$": "<rootDir>/src/types/$1",
+    "^@/components/(.*)$": "<rootDir>/src/components/$1",
+    "^@/utils/(.*)$": "<rootDir>/src/utils/$1",
   },
   coverageThreshold: {
     global: {

@@ -1,8 +1,0 @@
-[
-  { "name": "apple", "amount": 10, "price": 12, "country": "USA" },
-  { "name": "pear", "amount": 20, "price": 10, "country": "UK" },
-  { "name": "orange", "amount": 30, "price": 22, "country": "UK" },
-  { "name": "grape", "amount": 40, "price": 5, "country": "USA" },
-  { "name": "melon", "amount": 50, "price": 6, "country": "AUS" },
-  { "name": "peach", "amount": 60, "price": 3.5, "country": "AUS" }
-]
