@@ -6,13 +6,13 @@ describe("CategoryDataSource", () => {
   it("should return 3 arrays", () => {
     const valueParams: DataParam[] = [
       {
-        title: "amount",
+        name: "amount",
         aggregation: NUMBER_AGGREGATION.COUNT,
         type: "number",
       },
-      { title: "price", aggregation: NUMBER_AGGREGATION.MEAN, type: "number" },
+      { name: "price", aggregation: NUMBER_AGGREGATION.MEAN, type: "number" },
     ];
-    const dimensionParam: DataParam = { title: "country", type: "string" };
+    const dimensionParam: DataParam = { name: "country", type: "string" };
     const sortBy = "country";
     const dataSource = new CategoryDataSource(
       fruits,

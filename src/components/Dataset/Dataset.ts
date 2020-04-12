@@ -1,5 +1,5 @@
 import { EChartOption } from "echarts";
-import { isEmpty, isUndefined } from "lodash";
+import { isEmpty, isUndefined, groupBy as gBy, toPairs as toP } from "lodash";
 import { flow, groupBy, map, sortBy, toPairs } from "lodash/fp";
 import { DataParam, DataParamType } from "@/types/Param";
 import { PlotDataset, PlotDatasetInfo } from "./PlotDataset";
@@ -19,38 +19,38 @@ export interface PaginateDatasetArgs {
   pageSize: number;
 }
 
-export interface Dataset {
+export interface DatasetInterface {
   entity: {
     source: DataSourceType[];
     dimensions: string[];
   };
   info: {
     facet?: string;
-    subgroup: string;
-    category: string;
+    subgroup?: string;
+    category?: string;
   };
 }
 
 export class Dataset {
-  private identityMap = new Map<symbol, PlotIdentifier>();
+  private identifierMap = new Map<string, PlotIdentifier>();
   constructor(private data: DataItem[]) {}
-  public getGenericDatasets(
+  public getPlotDatasets(
     valueParams: DataParam[],
     dimensionParam: DataParam,
-    facetName: string,
-    subgroupName: string,
-    categoryName: string,
-    orderBy: string,
-  ): EChartOption.Dataset[] {
+    facetName?: string,
+    categoryName?: string,
+    subgroupName?: string,
+    orderBy?: string,
+  ): PlotDataset[] {
     const valueType = valueParams[0]?.type;
 
     const chain = flow(
       groupBy(
-        this.getIdentitierSymbolWith(
+        this.getIdentifierWith(
           valueType,
           facetName,
-          subgroupName,
           categoryName,
+          subgroupName,
         ), // return identity as symbol type
       ),
       toPairs,
@@ -66,57 +66,57 @@ export class Dataset {
     return chain(this.data);
   }
 
-  public getIdentitierSymbolWith(
+  public getIdentifierWith(
     valueType: DataParamType,
-    facetName: string,
-    subgroupName: string,
-    categoryName: string,
-  ): (data: DataItem) => symbol {
-    return (data: DataItem): symbol => {
-      const subgroup = data[subgroupName];
+    facetName = "",
+    categoryName = "",
+    subgroupName = "",
+  ): (data: DataItem) => string {
+    return (data: DataItem): string => {
       const facet = data[facetName];
       const category = data[categoryName];
+      const subgroup = data[subgroupName];
       const identifier = new PlotIdentifier(
         valueType,
         typeof facet === "string" ? facet : "",
-        typeof subgroup === "string" ? subgroup : "",
         typeof category === "string" ? category : "",
+        typeof subgroup === "string" ? subgroup : "",
       );
 
       let isExisting = false;
-      let symbol = identifier.toSymbol();
+      let idString = identifier.toString();
       // symbol is unique;
-      this.identityMap.forEach((identity: PlotIdentifier) => {
-        if (identifier.isEqual(identity)) {
-          symbol = identity.toSymbol();
+      this.identifierMap.forEach((id: PlotIdentifier) => {
+        if (identifier.isEqual(id)) {
+          idString = id.toString();
           isExisting = true;
         }
       });
 
       if (isExisting === false) {
-        this.identityMap.set(symbol, identifier);
+        this.identifierMap.set(idString, identifier);
       }
 
-      return symbol;
+      return idString;
     };
   }
 
   public getPlotDatasetWith(
     valueParams: DataParam[],
     dimensionParam: DataParam,
-    orderBy: string,
-  ): (arg: [symbol, DataItem[]]) => PlotDataset {
-    return ([identitysymbol, data]: [symbol, DataItem[]]): PlotDataset => {
-      const identity = this.identityMap.get(identitysymbol);
+    orderBy?: string,
+  ): (arg: [string, DataItem[]]) => PlotDataset {
+    return ([identifierString, data]: [string, DataItem[]]): PlotDataset => {
+      const identifier = this.identifierMap.get(identifierString);
 
-      if (isUndefined(identity)) {
+      if (isUndefined(identifier)) {
         throw new Error("identity does not exist");
       }
 
-      const facet = identity.getFacet();
-      const category = identity.getCategory();
-      const valueType = identity.getvalueType();
-      const subgroup = identity.getSubgroup();
+      const facet = identifier.getFacet();
+      const category = identifier.getCategory();
+      const valueType = identifier.getvalueType();
+      const subgroup = identifier.getSubgroup();
 
       const hasAggregation = valueParams.some(
         (value) => !isEmpty(value.aggregation),
@@ -148,10 +148,10 @@ export class Dataset {
           break;
       }
 
-      const source: DataSourceType[] = [];
+      const source: DataItem[] = dataSource.transformToDataArray();
       const dimensions: string[] = [];
       const info: PlotDatasetInfo = {
-        dimension: dimensionParam.title,
+        dimension: dimensionParam.name,
         facet: facet,
         category,
         subgroup,

@@ -60,7 +60,7 @@ export class PlotDataset {
   ): [number, number] {
     const paramData = compact(
       flatten(
-        dataParams.map((param) => source.map((data) => data[param.title])),
+        dataParams.map((param) => source.map((data) => data[param.name])),
       ),
     );
     if (checkArrayType(paramData, "number") && !isNil(paramData)) {

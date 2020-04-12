@@ -6,7 +6,7 @@ import { NUMBER_AGGREGATION } from "@/types/Aggregation";
 describe("aggregateValues", () => {
   it("should return count value", () => {
     const valueParam: DataParam = {
-      title: "amount",
+      name: "amount",
       type: "number",
       aggregation: NUMBER_AGGREGATION.COUNT,
     };
@@ -15,7 +15,7 @@ describe("aggregateValues", () => {
 
   it("should return min value", () => {
     const valueParam: DataParam = {
-      title: "amount",
+      name: "amount",
       type: "number",
       aggregation: NUMBER_AGGREGATION.MIN,
     };
@@ -24,7 +24,7 @@ describe("aggregateValues", () => {
 
   it("should return max value", () => {
     const valueParam: DataParam = {
-      title: "amount",
+      name: "amount",
       type: "number",
       aggregation: NUMBER_AGGREGATION.MAX,
     };
@@ -33,7 +33,7 @@ describe("aggregateValues", () => {
 
   it("should return mean value", () => {
     const valueParam: DataParam = {
-      title: "amount",
+      name: "amount",
       type: "number",
       aggregation: NUMBER_AGGREGATION.MEAN,
     };
@@ -42,7 +42,7 @@ describe("aggregateValues", () => {
 
   it("should return sum value", () => {
     const valueParam: DataParam = {
-      title: "amount",
+      name: "amount",
       type: "number",
       aggregation: NUMBER_AGGREGATION.SUM,
     };
@@ -51,7 +51,7 @@ describe("aggregateValues", () => {
 
   it("should return sum value when aggregation is undefined", () => {
     const valueParam: DataParam = {
-      title: "amount",
+      name: "amount",
       type: "number",
     };
     expect(aggregateDataByValueParam(fruits, valueParam)).toBe(210);
@@ -59,7 +59,7 @@ describe("aggregateValues", () => {
 
   it("should return NaN when aggregation is invalid", () => {
     const valueParam: DataParam = {
-      title: "amount",
+      name: "amount",
       type: "number",
       // @ts-ignore
       aggregation: "invalid",
@@ -69,7 +69,7 @@ describe("aggregateValues", () => {
 
   it("should return min value even input has invalid data", () => {
     const valueParam: DataParam = {
-      title: "amount",
+      name: "amount",
       type: "number",
       aggregation: NUMBER_AGGREGATION.MIN,
     };

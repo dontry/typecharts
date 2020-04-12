@@ -7,8 +7,8 @@ export class PlotIdentifier {
   constructor(
     private valueType: DataParamType = "number",
     private facet: string = "",
-    private subgroup: string = "",
     private category: string = "",
+    private subgroup: string = "",
   ) {}
 
   public getFacet(): string {
@@ -31,14 +31,16 @@ export class PlotIdentifier {
     const facetExp = this.facet
       ? `facet${this.IDENTITY_SYMBOL}${this.facet}`
       : "";
-    const categoryExp =
-      this.valueType === "string" && this.category
+    const categoryExp = this.category
+      ? `category${this.IDENTITY_SYMBOL}${this.category}`
+      : "";
+    const subgroupExp =
+      this.valueType === "string" && this.subgroup // subgroup only available when value type is number
         ? `subgroup${this.IDENTITY_SYMBOL}${this.subgroup}`
         : "";
-    const subgroupExp = this.subgroup
-      ? `subgroup${this.IDENTITY_SYMBOL}${this.subgroup}`
-      : "";
-    const exp = [facetExp, categoryExp, subgroupExp].join(this.DELIMITER);
+    const exp = [facetExp, categoryExp, subgroupExp]
+      .filter((exp) => exp !== "")
+      .join(this.DELIMITER);
 
     return exp;
   }

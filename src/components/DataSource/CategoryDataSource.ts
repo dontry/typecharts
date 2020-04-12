@@ -13,7 +13,7 @@ export class CategoryDataSource extends AbstractDataSource {
     private orderBy?: string,
   ) {
     super(data);
-    this.dimensionName = dimensonParam.title;
+    this.dimensionName = dimensonParam.name;
   }
 
   public transformToDataArray(): DataItem[] {
@@ -35,7 +35,7 @@ export class CategoryDataSource extends AbstractDataSource {
       if (valueParam.aggregation) {
         return {
           ...acc,
-          [valueParam.title]: aggregateDataByValueParam(array, valueParam),
+          [valueParam.name]: aggregateDataByValueParam(array, valueParam),
         };
       } else {
         return acc;

@@ -4,12 +4,11 @@ import { DataItem } from "@/types/DataItem";
 import { DataSourceType } from "@/types/DataSourceType";
 import { compact, isObject } from "lodash";
 
-
 export function aggregateDataByValueParam(
   data: DataItem[],
   valueParam: DataParam,
 ): number {
-  const { title, aggregation } = valueParam;
+  const { name: title, aggregation } = valueParam;
   try {
     switch (aggregation) {
       case "count":
@@ -97,4 +96,3 @@ export function deepMerge(rst: any, ...args: any[]): any {
   }
   return rst;
 }
-
