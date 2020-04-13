@@ -1,5 +1,5 @@
 import { EChartOption } from "echarts";
-import { isEmpty, isUndefined, groupBy as gBy, toPairs as toP } from "lodash";
+import { isEmpty, isUndefined, isNil, compact } from "lodash";
 import { flow, groupBy, map, sortBy, toPairs } from "lodash/fp";
 import { DataParam, DataParamType } from "@/types/Param";
 import { PlotDataset, PlotDatasetInfo } from "./PlotDataset";
@@ -34,6 +34,7 @@ export interface DatasetInterface {
 export class Dataset {
   private identifierMap = new Map<string, PlotIdentifier>();
   constructor(private data: DataItem[]) {}
+
   public getPlotDatasets(
     valueParams: DataParam[],
     dimensionParam: DataParam,
@@ -55,6 +56,7 @@ export class Dataset {
       ),
       toPairs,
       map(this.getPlotDatasetWith(valueParams, dimensionParam, orderBy)),
+      compact,
       sortBy((dataset: PlotDataset) =>
         facetName
           ? dataset.getInfo().facet
@@ -71,8 +73,8 @@ export class Dataset {
     facetName = "",
     categoryName = "",
     subgroupName = "",
-  ): (data: DataItem) => string {
-    return (data: DataItem): string => {
+  ): (data: DataItem) => string | undefined {
+    return (data: DataItem): string | undefined => {
       const facet = data[facetName];
       const category = data[categoryName];
       const subgroup = data[subgroupName];
@@ -85,6 +87,14 @@ export class Dataset {
 
       let isExisting = false;
       let idString = identifier.toString();
+
+      if (
+        isNil(idString) ||
+        (idString === "" &&
+          this.hasMultiplePlots(facetName, categoryName, subgroupName))
+      ) {
+        return;
+      }
       // symbol is unique;
       this.identifierMap.forEach((id: PlotIdentifier) => {
         if (identifier.isEqual(id)) {
@@ -105,12 +115,15 @@ export class Dataset {
     valueParams: DataParam[],
     dimensionParam: DataParam,
     orderBy?: string,
-  ): (arg: [string, DataItem[]]) => PlotDataset {
-    return ([identifierString, data]: [string, DataItem[]]): PlotDataset => {
+  ): (arg: [string, DataItem[]]) => PlotDataset | undefined {
+    return ([identifierString, data]: [string, DataItem[]]):
+      | PlotDataset
+      | undefined => {
       const identifier = this.identifierMap.get(identifierString);
 
       if (isUndefined(identifier)) {
-        throw new Error("identity does not exist");
+        console.warn(`identifier ${identifier} does not exist.`);
+        return;
       }
 
       const facet = identifier.getFacet();
@@ -162,6 +175,7 @@ export class Dataset {
     };
   }
 
+  // TODO: paginateDatasets
   public getPaginateDatasets(
     datasets: EChartOption.Dataset,
     facetNames: string[],
@@ -170,5 +184,13 @@ export class Dataset {
     pageSize: number,
   ): EChartOption.Dataset[] {
     return [];
+  }
+
+  private hasMultiplePlots(
+    facetName?: string,
+    categoryName?: string,
+    subgroupName?: string,
+  ): boolean {
+    return !!facetName || !!categoryName || !!subgroupName;
   }
 }

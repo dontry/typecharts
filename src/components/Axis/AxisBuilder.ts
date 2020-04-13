@@ -12,8 +12,8 @@ export interface AxisComponentConfig extends AxisConfig {
   type: AxisType;
   axisDimension: AxisDimension;
   gridIndex: number;
-  data: DataValue[] | undefined;
   count: number;
+  data?: DataValue[];
 }
 
 export class AxisBuilder extends AbstractComponentBuilder<Axis, AxisComponent> {
@@ -28,10 +28,12 @@ export class AxisBuilder extends AbstractComponentBuilder<Axis, AxisComponent> {
 
   // TODO: gridIndex, axisTick, axisLabel, custom, facetName
 
-  public setData(type: AxisType, data: DataValue[] | undefined): void {
-    if (type === "value") {
-      this.component.data = data;
-    }
+  public setData(data: DataValue[] | undefined): void {
+    this.component.data = data;
+  }
+
+  public setCount(count: number): void {
+    this.component.count = count;
   }
 
   public setName(name: string): void {
@@ -68,7 +70,7 @@ export class AxisBuilder extends AbstractComponentBuilder<Axis, AxisComponent> {
     } else if (axisDimension === "y" && max) {
       this.component.nameGap = this.computeNameGap(max);
     } else {
-      console.error("setNameGap arguments are invalid");
+      console.warn("setNameGap arguments are invalid");
     }
   }
 
@@ -96,17 +98,18 @@ export class AxisBuilder extends AbstractComponentBuilder<Axis, AxisComponent> {
       min,
       max,
       scale,
-      type,
       nameGap,
       show,
       name,
       gridIndex,
+      count,
     } = this.config;
 
     this.setName(name);
-    this.setData(type, data);
+    this.setData(data);
     this.setMin(min);
     this.setMax(max);
+    this.setCount(count);
     this.setScale(scale);
     this.setGridIndex(gridIndex);
     this.setNameGap(axisDimension, nameGap, max);

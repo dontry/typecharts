@@ -26,7 +26,7 @@ describe("Dataset", () => {
         categoryName,
         subgroupName,
       )(superStoreData[0]);
-      expect(identifier.toString()).toEqual(
+      expect(identifier?.toString()).toEqual(
         "facet::Henderson;category::Furniture;subgroup::Bookcases",
       );
     });
@@ -42,7 +42,7 @@ describe("Dataset", () => {
         categoryName,
         subgroupName,
       )(superStoreData[0]);
-      expect(identifier.toString()).toEqual(
+      expect(identifier?.toString()).toEqual(
         "facet::Henderson;category::Furniture",
       );
     });
@@ -67,14 +67,21 @@ describe("Dataset", () => {
       facetName,
       categoryName,
     )(superStoreData[0]);
-    const plotDataset = component.getPlotDatasetWith(
-      valueParams,
-      dimensionParam,
-    )([identifier, superStoreData]);
 
-    expect(plotDataset.getInfo().dimension).toBe("Segment");
-    expect(plotDataset.getInfo().category).toBe("Furniture");
-    expect(plotDataset.getInfo().facet).toBe("Kentucky");
+    expect(identifier).toBeDefined();
+    if (identifier) {
+      const plotDataset = component.getPlotDatasetWith(
+        valueParams,
+        dimensionParam,
+      )([identifier, superStoreData]);
+
+      expect(plotDataset).toBeDefined();
+      if (plotDataset) {
+        expect(plotDataset.getInfo().dimension).toBe("Segment");
+        expect(plotDataset.getInfo().category).toBe("Furniture");
+        expect(plotDataset.getInfo().facet).toBe("Kentucky");
+      }
+    }
   });
 
   describe("getPlotDatasets", () => {
