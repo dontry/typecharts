@@ -29,7 +29,7 @@ export class NiceScale {
     this.niceMin =
       Math.floor(this.minPoint / this.tickSpacing) * this.tickSpacing;
     this.niceMax =
-      Math.floor(this.maxPoint / this.tickSpacing) * this.tickSpacing;
+      Math.ceil(this.maxPoint / this.tickSpacing) * this.tickSpacing;
     this.minRange = this.onZero
       ? this.niceMin === 0
         ? this.niceMin

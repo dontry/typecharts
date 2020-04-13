@@ -33,7 +33,13 @@ export function aggregateDataByValueParam(
 }
 
 export function checkArrayType(array: any[] = [], type: string): boolean {
-  return array.every((element) => typeof element === type);
+  return array.every((element) => {
+    if (type === "number") {
+      return typeof Number.parseFloat(element) === "number";
+    } else {
+      return typeof element === type;
+    }
+  });
 }
 
 export function naturalSort(array: DataSourceType[]): DataSourceType[] {
