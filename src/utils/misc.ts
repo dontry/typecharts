@@ -1,27 +1,28 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DataParam } from "@/types/Param";
 import { minBy, maxBy, meanBy, sumBy } from "lodash";
-import { DataItem } from "@/types/DataItem";
 import { DataSourceType } from "@/types/DataSourceType";
 import { compact, isObject } from "lodash";
+import { DataItem } from "@/types/DataItem";
 
 export function aggregateDataByValueParam(
   data: DataItem[],
   valueParam: DataParam,
 ): number {
-  const { name: title, aggregation } = valueParam;
+  const { name, aggregation } = valueParam;
   try {
     switch (aggregation) {
       case "count":
         return data.length;
       case "min":
-        return minBy(data as any[], title)[title];
+        return minBy(data as any[], name)[name];
       case "max":
-        return maxBy(data as any[], title)[title];
+        return maxBy(data as any[], name)[name];
       case "mean":
-        return meanBy(data, title);
+        return meanBy(data, name);
       case "sum":
       case undefined:
-        return sumBy(data, title);
+        return sumBy(data, name);
       default:
         console.error("Invalid aggregation");
         return NaN;
@@ -95,7 +96,6 @@ function _deepMerge(
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function deepMerge(rst: any, ...args: any[]): any {
   for (let i = 0; i < args.length; i += 1) {
     _deepMerge(rst, args[i]);

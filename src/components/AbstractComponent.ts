@@ -6,7 +6,5 @@ export abstract class AbstractComponent<T> implements BaseOption<T> {
   constructor() {
     this.id = uuid();
   }
-  toEchartOption(): T {
-    throw new Error("Method not implemented.");
-  }
+  abstract toEchartOption(): T;
 }

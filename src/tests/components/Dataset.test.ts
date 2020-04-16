@@ -77,9 +77,9 @@ describe("Dataset", () => {
 
       expect(plotDataset).toBeDefined();
       if (plotDataset) {
-        expect(plotDataset.getInfo().dimension).toBe("Segment");
-        expect(plotDataset.getInfo().category).toBe("Furniture");
-        expect(plotDataset.getInfo().facet).toBe("Kentucky");
+        expect(plotDataset.getInfo().dimensionName).toBe("Segment");
+        expect(plotDataset.getInfo().categoryName).toBe("Furniture");
+        expect(plotDataset.getInfo().facetName).toBe("Kentucky");
       }
     }
   });

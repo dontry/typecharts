@@ -8,16 +8,11 @@ export class GridBuilder extends AbstractComponentBuilder<Grid, GridComponent> {
     this.component = new GridComponent(config);
   }
 
-  public reset(): void {
-    this.component = new GridComponent();
+  public setConfig(config: GridConfig): void {
+    this.component.config = config;
   }
 
   public build(): GridComponent | null {
-    this.config && this.component.getGridSetting(this.config);
     return this.component;
-  }
-
-  public setConfig(config: GridConfig): void {
-    this.component.config = config;
   }
 }

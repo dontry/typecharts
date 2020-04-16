@@ -22,10 +22,6 @@ export class AxisBuilder extends AbstractComponentBuilder<Axis, AxisComponent> {
     this.component = new AxisComponent();
   }
 
-  public reset(): void {
-    this.component = new AxisComponent();
-  }
-
   // TODO: gridIndex, axisTick, axisLabel, custom, facetName
 
   public setData(data: DataValue[] | undefined): void {
@@ -78,12 +74,15 @@ export class AxisBuilder extends AbstractComponentBuilder<Axis, AxisComponent> {
     this.component.position = axisDimension === "x" ? "left" : "bottom";
   }
 
+  // FIXME: improve nameGap algorithm
   private computeNameGap(value: Minmax): number | undefined {
     if (typeof value === "number") {
       const decimalFormat = format(".3");
-      return decimalFormat(value).toString().length * 10;
+      const offset = decimalFormat(value).toString().length - 10;
+      return AxisComponent.DEFAULT_NAME_GAP + (offset > 0 ? offset * 0.5 : 0);
     } else if (typeof value === "string") {
-      return value.length + 10;
+      const offset = value.length - 10;
+      return AxisComponent.DEFAULT_NAME_GAP + (offset > 0 ? offset * 0.5 : 0);
     } else {
       return undefined;
     }

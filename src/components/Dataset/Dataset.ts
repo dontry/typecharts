@@ -59,10 +59,10 @@ export class Dataset {
       compact,
       sortBy((dataset: PlotDataset) =>
         facetName
-          ? dataset.getInfo().facet
+          ? dataset.getInfo().facetName
           : subgroupName
-          ? dataset.getInfo().subgroup
-          : dataset.getInfo().category,
+          ? dataset.getInfo().subgroupName
+          : dataset.getInfo().categoryName,
       ),
     );
     return chain(this.data);
@@ -145,7 +145,11 @@ export class Dataset {
       switch (dataSourceType) {
         case "date":
           // TODO: dateTimeDataSource
-          dataSource = new DateTimeDataSource(data);
+          dataSource = new DateTimeDataSource(
+            data,
+            valueParams,
+            dimensionParam,
+          );
           break;
         case "string":
           dataSource = new CategoryDataSource(
@@ -164,10 +168,10 @@ export class Dataset {
       const source: DataItem[] = dataSource.transformToDataArray();
       const dimensions: string[] = [];
       const info: PlotDatasetInfo = {
-        dimension: dimensionParam.name,
-        facet: facet,
-        category,
-        subgroup,
+        dimensionName: dimensionParam.name,
+        facetName: facet,
+        categoryName: category,
+        subgroupName: subgroup,
       };
 
       const plotDataset = new PlotDataset(source, dimensions, info);

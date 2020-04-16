@@ -18,7 +18,7 @@ export interface AxisSettingConfig extends AxisConfig {
 }
 
 export class AxisComponent extends AbstractComponent<Axis> {
-  protected readonly DEFAULT_NAME_GAP = 27;
+  public static readonly DEFAULT_NAME_GAP = 27;
 
   protected _data: DataValue[] | undefined = [];
   protected _name = "";
@@ -31,11 +31,12 @@ export class AxisComponent extends AbstractComponent<Axis> {
   protected _min: Minmax | undefined = undefined;
   protected _max: Minmax | undefined = undefined;
   protected _show = true;
+
   private _splitNumber: number | "auto" = "auto";
 
   constructor() {
     super();
-    this.nameGap = this.DEFAULT_NAME_GAP;
+    this.nameGap = AxisComponent.DEFAULT_NAME_GAP;
   }
 
   public get count(): number {

@@ -6,7 +6,7 @@ export class NumericDataSource extends AbstractDataSource {
   constructor(protected data: DataItem[], private orderBy?: string) {
     super(data);
   }
-  transformToDataArray(): DataItem[] {
+  public transformToDataArray(): DataItem[] {
     if (this.orderBy) {
       return sortBy(this.data, this.orderBy);
     } else {

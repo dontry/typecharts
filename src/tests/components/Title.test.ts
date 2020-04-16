@@ -37,21 +37,6 @@ describe("Test Builder", () => {
     expect(component.show).toBe(false);
     expect(component.text).toBe("bbb");
   });
-
-  it("should reset component", () => {
-    const config: TitleConfig = {
-      text: "aaa",
-      show: true,
-    };
-
-    const builder = new TitleBuilder(config);
-    builder.build();
-    builder.reset();
-
-    const component = builder.getComponent();
-    expect(component.show).toBe(true);
-    expect(component.text).toBe("");
-  });
 });
 
 describe("Title component", () => {

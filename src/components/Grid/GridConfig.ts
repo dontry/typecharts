@@ -1,9 +1,9 @@
 export interface GridConfig {
-  cols: number;
-  rows: number;
-  colGap?: number;
-  rowGap?: number;
-  topPadding?: number;
-  bottomPadding?: number;
-  sidePadding?: number;
+  readonly cols: number;
+  readonly rows: number;
+  readonly colGap?: number;
+  readonly rowGap?: number;
+  readonly topPadding?: number;
+  readonly bottomPadding?: number;
+  readonly sidePadding?: number;
 }

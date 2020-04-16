@@ -1,4 +1,4 @@
-import { AxisComponent } from "./AxisComponent";
+import { Axis, AxisComponent } from "./AxisComponent";
 import {
   AxisDimension,
   AxisType,
@@ -7,13 +7,14 @@ import {
 } from "./AxisBuilder";
 import { DataParam } from "@/types/Param";
 import { EChartOption } from "echarts";
-import { flow, map, uniq, compact, sortBy } from "lodash/fp";
+import { flow, map, uniq, sortBy } from "lodash/fp";
 import { PlotDataset } from "../Dataset/PlotDataset";
 import { DataSourceType as DataSourceItem } from "@/types/DataSourceType";
 import { NiceScale } from "@/utils/NiceScale";
-import { isNil } from "lodash";
+import { isNil, compact } from "lodash";
 import { DataItem, DataValue } from "@/types/DataItem";
 import { naturalSort } from "@/utils/misc";
+import { AbstractComponentBuilder } from "../AbstractComponentBuilder";
 
 export enum AxisTypeEnum {
   string = "category",
@@ -22,7 +23,6 @@ export enum AxisTypeEnum {
 }
 
 export interface AxisGroupConfig {
-  datasets: PlotDataset[];
   axis: AxisDimension;
   dataParams: DataParam[];
   count: number;
@@ -35,8 +35,16 @@ export interface AxisGroupConfig {
   custom?: EChartOption.BasicComponents.CartesianAxis;
 }
 
-export class AxisGroupBuilder {
-  constructor(private config: AxisGroupConfig) {}
+export class AxisGroupBuilder extends AbstractComponentBuilder<
+  Axis,
+  AxisComponent
+> {
+  constructor(
+    protected datasets: PlotDataset[],
+    protected config: AxisGroupConfig,
+  ) {
+    super(config);
+  }
 
   private getFacetNamesFromDatasets(datasets: PlotDataset[]): string[] {
     const chain = flow(
@@ -49,7 +57,7 @@ export class AxisGroupBuilder {
   }
 
   private getFacetNameFromDataset(dataset: PlotDataset): string {
-    return dataset.getInfo().facet || dataset.getInfo().dimension || "";
+    return dataset.getInfo().facetName || dataset.getInfo().dimensionName || "";
   }
 
   private getAxisType(dimension: DataParam): AxisType {
@@ -106,10 +114,8 @@ export class AxisGroupBuilder {
     return axis === "x" && data != null;
   }
 
-  public build(): (AxisComponent | null)[] {
-    // TODO: cache some variables
+  public build(): AxisComponent[] {
     const {
-      datasets,
       uniformMinmax,
       dataParams,
       onZero,
@@ -120,62 +126,67 @@ export class AxisGroupBuilder {
       data,
       isDimension,
     } = this.config;
-    const facetNames = this.getFacetNamesFromDatasets(datasets);
+    const facetNames = this.getFacetNamesFromDatasets(this.datasets);
     const axisType = this.getAxisType(dataParams[0]);
 
-    let overallNiceScale: NiceScale | undefined;
+    let overallNiceScale: NiceScale;
 
     if (uniformMinmax === true && axisType === "value") {
-      const [min, max] = PlotDataset.getMinmaxOfDatasets(datasets, dataParams);
+      const [min, max] = PlotDataset.getMinmaxOfDatasets(
+        this.datasets,
+        dataParams,
+      );
       overallNiceScale = new NiceScale(min, max, onZero);
     }
 
-    const axisGroup = datasets.map((dataset: PlotDataset, index: number) => {
-      const facetName = this.getFacetNameFromDataset(dataset);
-      const facetIndex = facetName ? facetNames.indexOf(facetName) : 0;
+    const axisGroup = compact(
+      this.datasets.map((dataset: PlotDataset, index: number) => {
+        const facetName = this.getFacetNameFromDataset(dataset);
+        const facetIndex = facetName ? facetNames.indexOf(facetName) : 0;
 
-      let axisNiceScale: NiceScale | undefined = overallNiceScale;
+        let axisNiceScale: NiceScale | undefined = overallNiceScale;
 
-      if (uniformMinmax === false && axisType === "value") {
-        const [_min, _max] = PlotDataset.getMinmaxListOfSource(
-          dataset.getSource(),
-          dataParams,
-        );
-
-        axisNiceScale = new NiceScale(_min, _max, onZero);
-      }
-      let axisMin, axisMax;
-      if (axisNiceScale) {
-        const [_min, _max] = axisNiceScale.calculate();
-        axisMin = _min;
-        axisMax = _max;
-      }
-
-      // dimension axis should be retrieved from data source
-      const axisData = isDimension
-        ? this.calculateDimensionData(
-            index,
-            dataParams[0],
+        if (uniformMinmax === false && axisType === "value") {
+          const [_min, _max] = PlotDataset.getMinmaxListOfSource(
             dataset.getSource(),
-            data,
-          )
-        : undefined;
+            dataParams,
+          );
 
-      const axisConfig: AxisComponentConfig = {
-        data: axisData,
-        type: axisType,
-        axisDimension: axis,
-        gridIndex: facetIndex,
-        min: axisMin,
-        max: axisMax,
-        count: count,
-        name: facetName,
-        show: show,
-        scale: scale,
-      };
-      const axisComponent = new AxisBuilder(axisConfig).build();
-      return axisComponent;
-    });
+          axisNiceScale = new NiceScale(_min, _max, onZero);
+        }
+        let axisMin, axisMax;
+        if (axisNiceScale) {
+          const [_min, _max] = axisNiceScale.calculate();
+          axisMin = _min;
+          axisMax = _max;
+        }
+
+        // dimension axis should be retrieved from data source
+        const axisData = isDimension
+          ? this.calculateDimensionData(
+              index,
+              dataParams[0],
+              dataset.getSource(),
+              data,
+            )
+          : undefined;
+
+        const axisConfig: AxisComponentConfig = {
+          data: axisData,
+          type: axisType,
+          axisDimension: axis,
+          gridIndex: facetIndex,
+          min: axisMin,
+          max: axisMax,
+          count: count,
+          name: facetName,
+          show: show,
+          scale: scale,
+        };
+        const axisComponent = new AxisBuilder(axisConfig).build();
+        return axisComponent;
+      }),
+    );
 
     return axisGroup;
   }

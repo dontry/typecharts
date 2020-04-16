@@ -4,7 +4,7 @@ import { Position } from "@/types/Position";
 export interface TitleConfig {
   text?: string;
   id?: string;
-  show?: true;
+  show: boolean;
   subtext?: string;
   textAlign?: TextAlign;
   textVerticalAlign?: TextAlign;

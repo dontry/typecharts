@@ -1,4 +1,4 @@
-export enum DATE_AGGREGATION {
+export enum FREQUENCY {
   YEAR = "year",
   QUARTER = "quarter",
   MONTH = "month",

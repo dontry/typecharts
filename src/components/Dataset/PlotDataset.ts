@@ -6,10 +6,10 @@ import { DataItem } from "@/types/DataItem";
 import { checkArrayType } from "@/utils/misc";
 
 export interface PlotDatasetInfo {
-  dimension?: string;
-  facet?: string;
-  subgroup?: string;
-  category?: string;
+  dimensionName?: string;
+  facetName?: string;
+  subgroupName?: string;
+  categoryName?: string;
 }
 export class PlotDataset {
   private id: string;

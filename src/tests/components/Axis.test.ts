@@ -22,6 +22,7 @@ describe("Axis", () => {
         axisDimension: "x",
         gridIndex: 1,
         data: data,
+        facetName: "",
         nameGap: 10,
         count: 6,
         scale: true,
@@ -63,7 +64,6 @@ describe("Axis", () => {
         dimensionParam,
       );
       const xConfig: AxisGroupConfig = {
-        datasets: plotDatasets,
         axis: "x",
         dataParams: [dimensionParam],
         count: plotDatasets.length,
@@ -74,7 +74,7 @@ describe("Axis", () => {
         isDimension: true,
       };
 
-      const xBuilder = new AxisGroupBuilder(xConfig);
+      const xBuilder = new AxisGroupBuilder(plotDatasets, xConfig);
       const xAxisGroupComponent = xBuilder.build();
 
       expect(xAxisGroupComponent.length).toBe(1);
@@ -91,7 +91,6 @@ describe("Axis", () => {
       }
 
       const yConfig: AxisGroupConfig = {
-        datasets: plotDatasets,
         axis: "y",
         dataParams: valueParams,
         count: plotDatasets.length,
@@ -101,13 +100,13 @@ describe("Axis", () => {
         scale: true,
       };
 
-      const yBuilder = new AxisGroupBuilder(yConfig);
+      const yBuilder = new AxisGroupBuilder(plotDatasets, yConfig);
       const yAxisGroupComponent = yBuilder.build();
 
       expect(yAxisGroupComponent.length).toBe(1);
       if (yAxisGroupComponent[0]) {
         expect(yAxisGroupComponent[0].count).toBe(1);
-        expect(yAxisGroupComponent[0].nameGap).toBe(10);
+        expect(yAxisGroupComponent[0].nameGap).toBe(27);
         expect(yAxisGroupComponent[0].gridIndex).toBe(0);
         expect(yAxisGroupComponent[0].min).toBe(0);
         expect(yAxisGroupComponent[0].max).toBe(9);
@@ -150,7 +149,6 @@ describe("Axis", () => {
       );
 
       const xConfig: AxisGroupConfig = {
-        datasets: plotDatasets,
         axis: "x",
         dataParams: [dimensionParam],
         count: plotDatasets.length,
@@ -160,7 +158,7 @@ describe("Axis", () => {
         scale: true,
         isDimension: true,
       };
-      const xBuilder = new AxisGroupBuilder(xConfig);
+      const xBuilder = new AxisGroupBuilder(plotDatasets, xConfig);
       const xAxisGroupComponent = xBuilder.build();
 
       expect(xAxisGroupComponent.length).toBe(12);
@@ -192,7 +190,6 @@ describe("Axis", () => {
       }
 
       const yConfig: AxisGroupConfig = {
-        datasets: plotDatasets,
         axis: "y",
         dataParams: valueParams,
         count: plotDatasets.length,
@@ -201,17 +198,17 @@ describe("Axis", () => {
         show: true,
         scale: true,
       };
-      const yBuilder = new AxisGroupBuilder(yConfig);
+      const yBuilder = new AxisGroupBuilder(plotDatasets, yConfig);
       const yAxisGroupComponent = yBuilder.build();
 
       expect(yAxisGroupComponent.length).toBe(12);
       if (yAxisGroupComponent[0]) {
         expect(yAxisGroupComponent[0].count).toBe(12);
-        expect(yAxisGroupComponent[0].nameGap).toBe(30);
+        expect(yAxisGroupComponent[0].nameGap).toBe(27);
         expect(yAxisGroupComponent[0].gridIndex).toBe(0);
-        expect(yAxisGroupComponent[0].min).toBe(-75);
+        expect(yAxisGroupComponent[0].min).toBe(-12500);
         expect(yAxisGroupComponent[0].data).toBeUndefined();
-        expect(yAxisGroupComponent[0].max).toBe(125);
+        expect(yAxisGroupComponent[0].max).toBe(12500);
         expect(yAxisGroupComponent[0].show).toBe(true);
         expect(yAxisGroupComponent[0].scale).toBe(true);
         expect(yAxisGroupComponent[0].position).toBe("bottom");

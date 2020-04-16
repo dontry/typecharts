@@ -9,6 +9,7 @@ export function parseCsvData(filePath: string, fastMode?: boolean): DataItem[] {
     delimiter: ",",
     quoteChar: '"',
     header: true,
+    dynamicTyping: true,
   });
 
   return res.data;

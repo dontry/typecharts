@@ -3,7 +3,7 @@ import { DataSourceType } from "@/types/DataSourceType";
 import { DataItem } from "@/types/DataItem";
 
 export abstract class AbstractDataSource {
-  constructor(protected data: any[]) {}
+  constructor(protected data: DataItem[]) {}
   public abstract transformToDataArray(): DataItem[];
   public static getDataSourceType(
     valueType: DataParamType,
