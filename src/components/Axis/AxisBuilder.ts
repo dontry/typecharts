@@ -19,10 +19,11 @@ export interface AxisComponentConfig extends AxisConfig {
 export class AxisBuilder extends AbstractComponentBuilder<Axis, AxisComponent> {
   constructor(protected config: AxisComponentConfig) {
     super();
-    this.component = new AxisComponent();
+    const axis = config.axisDimension;
+    this.component = new AxisComponent(axis);
   }
 
-  // TODO: gridIndex, axisTick, axisLabel, custom, facetName
+  // TODO: gridIndex, axisTick, axisLabel, custom,
 
   public setData(data: DataValue[] | undefined): void {
     this.component.data = data;

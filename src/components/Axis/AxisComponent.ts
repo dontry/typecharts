@@ -34,8 +34,9 @@ export class AxisComponent extends AbstractComponent<Axis> {
 
   private _splitNumber: number | "auto" = "auto";
 
-  constructor() {
+  constructor(axis: AxisDimension) {
     super();
+    this.fieldName = axis;
     this.nameGap = AxisComponent.DEFAULT_NAME_GAP;
   }
 

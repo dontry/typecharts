@@ -1,7 +1,11 @@
 import { AbstractComponentBuilder } from "../AbstractComponentBuilder";
-import { Series, SeriesType } from "@/types/Series";
-import { SeriesComponent, SeriesComponentConfig } from "./SeriesComponent";
-import { PlotDatasetInfo } from "../Dataset/PlotDataset";
+import {
+  SeriesComponent,
+  SeriesComponentConfig,
+  Series,
+  SeriesType,
+} from "./SeriesComponent";
+import { PlotDatasetInfo } from "../Dataset/DatasetComponent";
 import { Encode } from "@/types/Encode";
 
 export class SeriesBuilder extends AbstractComponentBuilder<

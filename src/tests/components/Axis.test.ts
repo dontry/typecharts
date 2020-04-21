@@ -8,7 +8,7 @@ import {
   AxisGroupConfig,
 } from "@/components/Axis/AxisGroupBuilder";
 import { parseCsvData } from "../fixtures/utils";
-import { Dataset } from "@/components/Dataset/Dataset";
+import { DatasetBuilder } from "@/components/Dataset/DatasetBuilder";
 import { DataParam } from "@/types/Param";
 import { NUMBER_AGGREGATION } from "@/types/Aggregation";
 
@@ -22,7 +22,6 @@ describe("Axis", () => {
         axisDimension: "x",
         gridIndex: 1,
         data: data,
-        facetName: "",
         nameGap: 10,
         count: 6,
         scale: true,
@@ -44,11 +43,6 @@ describe("Axis", () => {
     test("2 valueParams, 1 dimensionParam", () => {
       const filePath = path.resolve(__dirname, "../fixtures/iris.csv");
       const data = parseCsvData(filePath, true);
-      const datasetComponent = new Dataset(data);
-      const dimensionParam: DataParam = {
-        type: "number",
-        name: "sepallength",
-      };
       const valueParams: DataParam[] = [
         {
           type: "number",
@@ -59,10 +53,14 @@ describe("Axis", () => {
           name: "petallength",
         },
       ];
-      const plotDatasets = datasetComponent.getPlotDatasets(
-        valueParams,
-        dimensionParam,
-      );
+      const dimensionParam: DataParam = {
+        type: "number",
+        name: "sepallength",
+      };
+      const config = { valueParams, dimensionParam };
+      const builder = new DatasetBuilder(data, config);
+
+      const plotDatasets = builder.getDatasets();
       const xConfig: AxisGroupConfig = {
         axis: "x",
         dataParams: [dimensionParam],
@@ -120,7 +118,6 @@ describe("Axis", () => {
     test("1 valueParam, 1 dimensionParam, 1 categoryParam, 1 facetParam", () => {
       const filePath = path.resolve(__dirname, "../fixtures/superstore.csv");
       const data = parseCsvData(filePath);
-      const datasetComponent = new Dataset(data);
       const dimensionParam: DataParam = {
         type: "string",
         name: "State",
@@ -141,12 +138,13 @@ describe("Axis", () => {
         type: "string",
         name: "Category",
       };
-      const plotDatasets = datasetComponent.getPlotDatasets(
-        valueParams,
+      const datasetComponent = new DatasetBuilder(data, {
         dimensionParam,
-        facetParam.name,
-        categoryParam.name,
-      );
+        valueParams,
+        facetParam,
+        categoryParam,
+      });
+      const plotDatasets = datasetComponent.getDatasets();
 
       const xConfig: AxisGroupConfig = {
         axis: "x",

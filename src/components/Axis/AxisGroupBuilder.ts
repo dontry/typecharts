@@ -8,7 +8,7 @@ import {
 import { DataParam } from "@/types/Param";
 import { EChartOption } from "echarts";
 import { flow, map, uniq, sortBy } from "lodash/fp";
-import { PlotDataset } from "../Dataset/PlotDataset";
+import { DatasetComponent } from "../Dataset/DatasetComponent";
 import { DataSourceType as DataSourceItem } from "@/types/DataSourceType";
 import { NiceScale } from "@/utils/NiceScale";
 import { isNil, compact } from "lodash";
@@ -27,7 +27,7 @@ export interface AxisGroupConfig {
   dataParams: DataParam[];
   count: number;
   onZero: boolean;
-  uniformMinmax: boolean;
+  uniformMinmax?: boolean;
   scale: boolean;
   show: boolean;
   isDimension?: boolean;
@@ -40,13 +40,13 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
   AxisComponent
 > {
   constructor(
-    protected datasets: PlotDataset[],
+    protected datasets: DatasetComponent[],
     protected config: AxisGroupConfig,
   ) {
     super(config);
   }
 
-  private getFacetNamesFromDatasets(datasets: PlotDataset[]): string[] {
+  private getFacetNamesFromDatasets(datasets: DatasetComponent[]): string[] {
     const chain = flow(
       map(this.getFacetNameFromDataset),
       uniq,
@@ -56,7 +56,7 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
     return chain(datasets) as string[];
   }
 
-  private getFacetNameFromDataset(dataset: PlotDataset): string {
+  private getFacetNameFromDataset(dataset: DatasetComponent): string {
     return dataset.getInfo().facetName || dataset.getInfo().dimensionName || "";
   }
 
@@ -132,7 +132,7 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
     let overallNiceScale: NiceScale;
 
     if (uniformMinmax === true && axisType === "value") {
-      const [min, max] = PlotDataset.getMinmaxOfDatasets(
+      const [min, max] = DatasetComponent.getMinmaxOfDatasets(
         this.datasets,
         dataParams,
       );
@@ -140,14 +140,14 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
     }
 
     const axisGroup = compact(
-      this.datasets.map((dataset: PlotDataset, index: number) => {
+      this.datasets.map((dataset: DatasetComponent, index: number) => {
         const facetName = this.getFacetNameFromDataset(dataset);
         const facetIndex = facetName ? facetNames.indexOf(facetName) : 0;
 
         let axisNiceScale: NiceScale | undefined = overallNiceScale;
 
         if (uniformMinmax === false && axisType === "value") {
-          const [_min, _max] = PlotDataset.getMinmaxListOfSource(
+          const [_min, _max] = DatasetComponent.getMinmaxListOfSource(
             dataset.getSource(),
             dataParams,
           );

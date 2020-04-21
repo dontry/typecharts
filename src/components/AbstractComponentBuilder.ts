@@ -7,10 +7,7 @@ export abstract class AbstractComponentBuilder<
 > implements ComponentBuilderInterface<T, K> {
   protected component!: K;
   constructor(protected config?: Record<string, any>) {}
-  public build(): K | null | (K | null)[] {
-    return this.component;
-  }
-
+  public abstract build(): K | null | (K | null)[];
   public getComponent(): K {
     return this.component;
   }

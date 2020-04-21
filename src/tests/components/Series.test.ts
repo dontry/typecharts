@@ -1,8 +1,7 @@
-import { PlotDataset } from "@/components/Dataset/PlotDataset";
 import { parseCsvData } from "../fixtures/utils";
 import path from "path";
 import fertility from "../fixtures/fertility.json";
-import { Dataset } from "@/components/Dataset/Dataset";
+import { DatasetBuilder } from "@/components/Dataset/DatasetBuilder";
 import { DataParam } from "@/types/Param";
 import { FREQUENCY, NUMBER_AGGREGATION } from "@/types/Aggregation";
 import { SeriesGroupConfig } from "@/components/Series/SeriesConfig";
@@ -31,13 +30,12 @@ describe("SeriesGroupBuilder", () => {
       name: "country",
     };
 
-    const dataset = new Dataset(fertility);
-    const plotDatasets = dataset.getPlotDatasets(
+    const dataset = new DatasetBuilder(fertility, {
       valueParams,
       dimensionParam,
-      undefined,
-      categoryParam.name,
-    );
+      categoryParam,
+    });
+    const plotDatasets = dataset.getDatasets();
     const xAxisGroupConfig: AxisGroupConfig = {
       axis: "x",
       count: plotDatasets.length,
@@ -97,18 +95,18 @@ describe("SeriesGroupBuilder", () => {
         name: "Profit",
       },
     ];
-    const facetName = "Region";
+    const facetParam: DataParam = { type: "string", name: "Region" };
     const dimensionParam: DataParam = {
       type: "string",
       name: "Segment",
     };
 
-    const dataset = new Dataset(parsedData);
-    const plotDatasets = dataset.getPlotDatasets(
+    const dataset = new DatasetBuilder(parsedData, {
       valueParams,
       dimensionParam,
-      facetName,
-    );
+      facetParam,
+    });
+    const plotDatasets = dataset.getDatasets();
     const xAxisGroupConfig: AxisGroupConfig = {
       axis: "x",
       count: plotDatasets.length,

@@ -1,9 +1,11 @@
 import { EChartOption } from "echarts";
-import { v4 as uuid } from "uuid";
 import { DataParam } from "@/types/Param";
 import { flow, flatten, min, max, compact, isNil, map } from "lodash/fp";
 import { DataItem } from "@/types/DataItem";
 import { checkArrayType } from "@/utils/misc";
+import { AbstractComponent } from "../AbstractComponent";
+
+export type Dataset = EChartOption.Dataset;
 
 export interface PlotDatasetInfo {
   dimensionName?: string;
@@ -11,14 +13,13 @@ export interface PlotDatasetInfo {
   subgroupName?: string;
   categoryName?: string;
 }
-export class PlotDataset {
-  private id: string;
+export class DatasetComponent extends AbstractComponent<Dataset> {
   constructor(
     private source: DataItem[],
     private dimensions: string[],
     private info: PlotDatasetInfo,
   ) {
-    this.id = uuid();
+    super();
   }
 
   public getEchartOptionDataset(): EChartOption.Dataset {
@@ -38,11 +39,11 @@ export class PlotDataset {
   }
 
   public static getMinmaxOfDatasets(
-    datasets: PlotDataset[],
+    datasets: DatasetComponent[],
     dataParams: DataParam[],
   ): [number, number] {
     const chain = flow(
-      map((dataset: PlotDataset) =>
+      map((dataset: DatasetComponent) =>
         this.getMinmaxListOfSource(dataset.source, dataParams),
       ),
       flatten,
@@ -71,5 +72,13 @@ export class PlotDataset {
     } else {
       throw Error("data source type should be number");
     }
+  }
+
+  public toEchartOption(): Dataset {
+    return {
+      id: this.id,
+      source: this.source,
+      dimensions: this.dimensions,
+    };
   }
 }

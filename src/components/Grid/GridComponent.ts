@@ -21,15 +21,13 @@ export interface SingleGridParam {
   sidePadding: number;
 }
 
-export type Grid = SingleGrid[];
-
-export class GridComponent extends AbstractComponent<Grid> {
+export class GridComponent extends AbstractComponent<SingleGrid[]> {
   private readonly DEFAULT_COL_GAP_SIZE = 8;
   private readonly DEFAULT_ROW_GAP_SIZE = 7;
   private readonly DEFAULT_TOP_PADDING = 5;
   private readonly DEFAULT_BOTTOM_PADDING = 7;
   private readonly DEFAULT_SIDE_PADDING = 5;
-  private readonly DEFAULT_GRIDS_SETTING: Grid = [
+  private readonly DEFAULT_GRIDS_SETTING: SingleGrid[] = [
     {
       left: "3%",
       right: "5%",
@@ -43,6 +41,7 @@ export class GridComponent extends AbstractComponent<Grid> {
 
   constructor(config: GridConfig = { rows: 1, cols: 1 }) {
     super();
+    this.fieldName = "grid";
     this._config = config;
   }
 
@@ -65,7 +64,7 @@ export class GridComponent extends AbstractComponent<Grid> {
     topPadding = this.DEFAULT_TOP_PADDING,
     bottomPadding = this.DEFAULT_BOTTOM_PADDING,
     sidePadding = this.DEFAULT_SIDE_PADDING,
-  }: GridConfig): Grid {
+  }: GridConfig): SingleGrid[] {
     if (rows === 1 && cols === 1) {
       return this.DEFAULT_GRIDS_SETTING;
     }
@@ -129,7 +128,7 @@ export class GridComponent extends AbstractComponent<Grid> {
     };
   }
 
-  public toEchartOption(): Grid {
+  public toEchartOption(): SingleGrid[] {
     return this.getGridSetting(this.config);
   }
 }

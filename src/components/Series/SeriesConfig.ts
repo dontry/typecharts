@@ -1,7 +1,7 @@
 import { AxisComponent } from "../Axis/AxisComponent";
-import { SeriesType } from "@/types/Series";
 import { DataParam } from "@/types/Param";
 import { Color } from "@/types/Color";
+import { SeriesType } from "./SeriesComponent";
 
 export interface SeriesGroupConfig {
   axisGroup: AxisComponent[];

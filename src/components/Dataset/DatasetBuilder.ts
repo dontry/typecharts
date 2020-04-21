@@ -1,8 +1,8 @@
 import { EChartOption } from "echarts";
 import { isEmpty, isUndefined, isNil, compact } from "lodash";
-import { flow, groupBy, map, sortBy, toPairs } from "lodash/fp";
+import { flow, groupBy, map, sortBy, toPairs, uniq } from "lodash/fp";
 import { DataParam, DataParamType } from "@/types/Param";
-import { PlotDataset, PlotDatasetInfo } from "./PlotDataset";
+import { DatasetComponent, PlotDatasetInfo, Dataset } from "./DatasetComponent";
 import { AbstractDataSource } from "@/components/DataSource/AbstractDataSource";
 import { DateTimeDataSource } from "@/components/DataSource/DateTimeDataSource";
 import { CategoryDataSource } from "@/components/DataSource/CategoryDataSource";
@@ -10,6 +10,15 @@ import { NumericDataSource } from "@/components/DataSource/NumericDataSource";
 import { DataItem } from "@/types/DataItem";
 import { PlotIdentifier } from "./PlotIdentity";
 import { DataSourceType } from "@/types/DataSourceType";
+
+export interface DatasetConfig {
+  valueParams: DataParam[];
+  dimensionParam: DataParam;
+  facetParam?: DataParam;
+  categoryParam?: DataParam;
+  subgroupParam?: DataParam;
+  orderBy?: string;
+}
 
 export interface PaginateDatasetArgs {
   datasets: EChartOption.Dataset;
@@ -31,19 +40,23 @@ export interface DatasetInterface {
   };
 }
 
-export class Dataset {
+export class DatasetBuilder {
   private identifierMap = new Map<string, PlotIdentifier>();
-  constructor(private data: DataItem[]) {}
+  constructor(private data: DataItem[], private config: DatasetConfig) {}
 
-  public getPlotDatasets(
-    valueParams: DataParam[],
-    dimensionParam: DataParam,
-    facetName?: string,
-    categoryName?: string,
-    subgroupName?: string,
-    orderBy?: string,
-  ): PlotDataset[] {
+  public getDatasets(): DatasetComponent[] {
+    const {
+      valueParams,
+      dimensionParam,
+      facetParam,
+      categoryParam,
+      subgroupParam,
+      orderBy,
+    } = this.config;
     const valueType = valueParams[0]?.type;
+    const facetName = facetParam?.name;
+    const categoryName = categoryParam?.name;
+    const subgroupName = subgroupParam?.name;
 
     const chain = flow(
       groupBy(
@@ -55,9 +68,9 @@ export class Dataset {
         ), // return identity as symbol type
       ),
       toPairs,
-      map(this.getPlotDatasetWith(valueParams, dimensionParam, orderBy)),
+      map(this.getDatasetWith(valueParams, dimensionParam, orderBy)),
       compact,
-      sortBy((dataset: PlotDataset) =>
+      sortBy((dataset: DatasetComponent) =>
         facetName
           ? dataset.getInfo().facetName
           : subgroupName
@@ -111,13 +124,13 @@ export class Dataset {
     };
   }
 
-  public getPlotDatasetWith(
+  public getDatasetWith(
     valueParams: DataParam[],
     dimensionParam: DataParam,
     orderBy?: string,
-  ): (arg: [string, DataItem[]]) => PlotDataset | undefined {
+  ): (arg: [string, DataItem[]]) => DatasetComponent | undefined {
     return ([identifierString, data]: [string, DataItem[]]):
-      | PlotDataset
+      | DatasetComponent
       | undefined => {
       const identifier = this.identifierMap.get(identifierString);
 
@@ -174,20 +187,70 @@ export class Dataset {
         subgroupName: subgroup,
       };
 
-      const plotDataset = new PlotDataset(source, dimensions, info);
+      const plotDataset = new DatasetComponent(source, dimensions, info);
       return plotDataset;
     };
   }
 
-  // TODO: paginateDatasets
-  public getPaginateDatasets(
-    datasets: EChartOption.Dataset,
-    facetNames: string[],
-    subgroupNames: string[],
+  static getNamesWithParam(param: keyof PlotDatasetInfo) {
+    return (datasets: DatasetComponent[]): string[] => {
+      const chain = flow(
+        map((dataset: DatasetComponent) => dataset.getInfo()[param]),
+        uniq,
+        compact,
+      );
+      return chain(datasets);
+    };
+  }
+
+  static getPaginateDatasets(
+    datasets: DatasetComponent[],
     pageIndex: number,
     pageSize: number,
-  ): EChartOption.Dataset[] {
-    return [];
+  ): DatasetComponent[] {
+    const facetNames = DatasetBuilder.getNamesWithParam("facetName")(datasets);
+    const categoryNames = DatasetBuilder.getNamesWithParam("categoryName")(
+      datasets,
+    );
+    // no facets then return the entire datasets
+    if (facetNames.length === 0) {
+      return datasets;
+    }
+    const paginateDatasets = [];
+    for (
+      let facetIndex = pageIndex * pageSize;
+      facetIndex < (pageIndex + 1) * pageSize;
+      facetIndex++
+    ) {
+      const curFacetName = facetNames[facetIndex];
+      if (facetNames.length <= facetIndex) break;
+      // no categories, then return the single facet dataset
+      if (categoryNames.length === 0) {
+        const dataset = datasets.find(
+          (dataset) => dataset.getInfo().facetName === curFacetName,
+        );
+        if (dataset) {
+          paginateDatasets.push(dataset);
+        }
+      } else {
+        for (
+          let categoryIndex = 0;
+          categoryIndex < categoryNames.length;
+          categoryIndex++
+        ) {
+          const curCategoryName = categoryNames[categoryIndex];
+          const dataset = datasets.find(
+            (dataset) =>
+              dataset.getInfo().facetName === curFacetName &&
+              dataset.getInfo().categoryName === curCategoryName,
+          );
+          if (dataset) {
+            paginateDatasets.push(dataset);
+          }
+        }
+      }
+    }
+    return paginateDatasets;
   }
 
   private hasMultiplePlots(

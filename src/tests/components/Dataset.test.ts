@@ -1,7 +1,7 @@
 import path from "path";
 import { DataItem } from "@/types/DataItem";
-import { Dataset } from "@/components/Dataset/Dataset";
-import { DataParamType, DataParam } from "@/types/Param";
+import { DatasetBuilder } from "@/components/Dataset/DatasetBuilder";
+import { DataParam } from "@/types/Param";
 import { parseCsvData } from "../fixtures/utils";
 import fertilityData from "../fixtures/fertility.json";
 
@@ -15,32 +15,57 @@ describe("Dataset", () => {
 
   describe("getIdentifierWith", () => {
     it("should return face, category and subgroup when value type is string", () => {
-      const component = new Dataset(superStoreData);
-      const valueType: DataParamType = "string";
-      const facetName = "City";
-      const categoryName = "Category";
-      const subgroupName = "Sub-Category";
+      const valueParams: DataParam[] = [
+        {
+          type: "string",
+          name: "Region",
+        },
+      ];
+      const dimensionParam: DataParam = { type: "string", name: "Region" };
+      const facetParam: DataParam = { type: "string", name: "City" };
+      const categoryParam: DataParam = { type: "string", name: "Category" };
+      const subgroupParam: DataParam = { type: "string", name: "Sub-Category" };
+      const component = new DatasetBuilder(superStoreData, {
+        valueParams,
+        dimensionParam,
+        facetParam,
+        categoryParam,
+        subgroupParam,
+      });
       const identifier = component.getIdentifierWith(
-        valueType,
-        facetName,
-        categoryName,
-        subgroupName,
+        valueParams[0].type,
+        facetParam.name,
+        categoryParam.name,
+        subgroupParam.name,
       )(superStoreData[0]);
       expect(identifier?.toString()).toEqual(
         "facet::Henderson;category::Furniture;subgroup::Bookcases",
       );
     });
     it("should return facet and category only when value type is number", () => {
-      const component = new Dataset(superStoreData);
-      const valueType: DataParamType = "number";
-      const facetName = "City";
-      const categoryName = "Category";
-      const subgroupName = "Sub-Category";
+      const valueParams: DataParam[] = [
+        {
+          type: "number",
+          name: "Quantity",
+        },
+      ];
+      const dimensionParam: DataParam = { type: "string", name: "Region" };
+      const facetParam: DataParam = { type: "string", name: "City" };
+      const categoryParam: DataParam = { type: "string", name: "Category" };
+      const subgroupParam: DataParam = { type: "string", name: "Sub-Category" };
+      const component = new DatasetBuilder(superStoreData, {
+        valueParams,
+        dimensionParam,
+        facetParam,
+        categoryParam,
+        subgroupParam,
+      });
+
       const identifier = component.getIdentifierWith(
-        valueType,
-        facetName,
-        categoryName,
-        subgroupName,
+        valueParams[0].type,
+        facetParam.name,
+        categoryParam.name,
+        subgroupParam.name,
       )(superStoreData[0]);
       expect(identifier?.toString()).toEqual(
         "facet::Henderson;category::Furniture",
@@ -49,28 +74,33 @@ describe("Dataset", () => {
   });
 
   test("getPlotDatasetWith", () => {
-    const component = new Dataset(superStoreData);
     const valueParams: DataParam[] = [
       {
         type: "number",
         name: "Quantity",
       },
     ];
-    const facetName = "State";
+    const facetParam: DataParam = { type: "string", name: "State" };
     const dimensionParam: DataParam = {
       type: "string",
       name: "Segment",
     };
-    const categoryName = "Category";
+    const categoryParam: DataParam = { type: "string", name: "Category" };
+    const component = new DatasetBuilder(superStoreData, {
+      valueParams,
+      dimensionParam,
+      facetParam,
+      categoryParam,
+    });
     const identifier = component.getIdentifierWith(
       valueParams[0].type,
-      facetName,
-      categoryName,
+      facetParam.name,
+      categoryParam.name,
     )(superStoreData[0]);
 
     expect(identifier).toBeDefined();
     if (identifier) {
-      const plotDataset = component.getPlotDatasetWith(
+      const plotDataset = component.getDatasetWith(
         valueParams,
         dimensionParam,
       )([identifier, superStoreData]);
@@ -86,7 +116,6 @@ describe("Dataset", () => {
 
   describe("getPlotDatasets", () => {
     it("with facet", () => {
-      const component = new Dataset(fertilityData);
       const valueParams: DataParam[] = [
         {
           type: "number",
@@ -97,19 +126,19 @@ describe("Dataset", () => {
         type: "number",
         name: "year",
       };
-      const facetName = "country";
-
-      const plotDatasets = component.getPlotDatasets(
+      const facetParam: DataParam = { type: "string", name: "country" };
+      const component = new DatasetBuilder(fertilityData, {
         valueParams,
         dimensionParam,
-        facetName,
-      );
+        facetParam,
+      });
+
+      const plotDatasets = component.getDatasets();
 
       expect(plotDatasets.length).toBe(11);
     });
 
     it("with facet, subgroup", () => {
-      const component = new Dataset(superStoreData.slice(0, 100));
       const valueParams: DataParam[] = [
         {
           type: "number",
@@ -120,15 +149,16 @@ describe("Dataset", () => {
         type: "number",
         name: "Profit",
       };
-      const facetName = "State";
-      const categoryName = "Category";
+      const facetParam: DataParam = { type: "string", name: "State" };
+      const categoryParam: DataParam = { type: "string", name: "Category" };
 
-      const plotDatasets = component.getPlotDatasets(
+      const component = new DatasetBuilder(superStoreData.slice(0, 100), {
         valueParams,
         dimensionParam,
-        facetName,
-        categoryName,
-      );
+        facetParam,
+        categoryParam,
+      });
+      const plotDatasets = component.getDatasets();
 
       expect(plotDatasets.length).toBe(38);
     });

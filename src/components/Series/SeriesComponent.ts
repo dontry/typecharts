@@ -1,7 +1,20 @@
-import { Series, SeriesType } from "@/types/Series";
 import { AbstractComponent } from "../AbstractComponent";
-import { PlotDatasetInfo } from "../Dataset/PlotDataset";
+import { PlotDatasetInfo } from "../Dataset/DatasetComponent";
 import { Encode } from "@/types/Encode";
+import { IconType } from "@/types/IconType";
+
+export type SeriesType = "bar" | "line" | "pie";
+export interface Series {
+  type: SeriesType;
+  name: string;
+  xAxisIndex: number;
+  yAxisIndex: number;
+  id?: string;
+  symbol?: IconType;
+  symbolSize?: number;
+  cursor?: "pointer" | "not-allow";
+  sampling?: "average" | "max" | "min" | "sum";
+}
 
 export interface SeriesComponentConfig {
   type: SeriesType;
@@ -26,6 +39,7 @@ export class SeriesComponent extends AbstractComponent<Series> {
 
   constructor() {
     super();
+    this.fieldName = "series";
   }
 
   public get type(): SeriesType {

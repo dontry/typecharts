@@ -1,8 +1,11 @@
 import { AbstractComponentBuilder } from "../AbstractComponentBuilder";
-import { SeriesComponent, SeriesComponentConfig } from "./SeriesComponent";
-import { Series } from "@/types/Series";
+import {
+  SeriesComponent,
+  SeriesComponentConfig,
+  Series,
+} from "./SeriesComponent";
 import { SeriesGroupConfig } from "./SeriesConfig";
-import { PlotDataset } from "../Dataset/PlotDataset";
+import { DatasetComponent } from "../Dataset/DatasetComponent";
 import { DataParam } from "@/types/Param";
 import { isNil, flatten } from "lodash";
 import { SeriesBuilder } from "./SeriesBuilder";
@@ -16,14 +19,14 @@ export class SeriesGroupBuilder extends AbstractComponentBuilder<
    *
    */
   constructor(
-    protected datasets: PlotDataset[],
+    protected datasets: DatasetComponent[],
     protected config: SeriesGroupConfig,
   ) {
     super(config);
   }
 
   private getValueSeriesFromPlotDataset(
-    plotDataset: PlotDataset,
+    plotDataset: DatasetComponent,
     index: number,
     config: SeriesGroupConfig,
   ): SeriesComponent[] {
@@ -90,7 +93,7 @@ export class SeriesGroupBuilder extends AbstractComponentBuilder<
 
   public build(): SeriesComponent[] {
     const components = flatten(
-      this.datasets.map((plotDataset: PlotDataset, index: number) =>
+      this.datasets.map((plotDataset: DatasetComponent, index: number) =>
         this.getValueSeriesFromPlotDataset(plotDataset, index, this.config),
       ),
     );
