@@ -14,6 +14,7 @@ module.exports = {
     "^@/types/(.*)$": "<rootDir>/src/types/$1",
     "^@/components/(.*)$": "<rootDir>/src/components/$1",
     "^@/utils/(.*)$": "<rootDir>/src/utils/$1",
+    "^@/charts/(.*)$": "<rootDir>/src/charts/$1",
   },
   coverageThreshold: {
     global: {

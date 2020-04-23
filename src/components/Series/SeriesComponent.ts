@@ -5,11 +5,13 @@ import { IconType } from "@/types/IconType";
 
 export type SeriesType = "bar" | "line" | "pie";
 export interface Series {
+  id?: string;
   type: SeriesType;
   name: string;
+  encode: Encode;
+  datasetIndex: number;
   xAxisIndex: number;
   yAxisIndex: number;
-  id?: string;
   symbol?: IconType;
   symbolSize?: number;
   cursor?: "pointer" | "not-allow";
@@ -39,7 +41,7 @@ export class SeriesComponent extends AbstractComponent<Series> {
 
   constructor() {
     super();
-    this.fieldName = "series";
+    this.optionName = "series";
   }
 
   public get type(): SeriesType {
@@ -90,16 +92,22 @@ export class SeriesComponent extends AbstractComponent<Series> {
   public set encode(value: Encode) {
     this._encode = value;
   }
-
   public get color(): string | undefined {
     return this._color;
   }
-
   public set color(value: string | undefined) {
     this._color = value;
   }
 
   toEchartOption(): Series {
-    throw new Error("Method not implemented.");
+    return {
+      id: this.id,
+      type: this._type,
+      name: this._name,
+      encode: this._encode,
+      xAxisIndex: this._xAxisIndex,
+      yAxisIndex: this._yAxisIndex,
+      datasetIndex: this._datasetIndex,
+    };
   }
 }

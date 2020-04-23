@@ -1,5 +1,5 @@
 import { EChartOption } from "echarts";
-import { isEmpty, isUndefined, isNil, compact } from "lodash";
+import { isEmpty, isUndefined, isNil, compact, pick } from "lodash";
 import { flow, groupBy, map, sortBy, toPairs, uniq } from "lodash/fp";
 import { DataParam, DataParamType } from "@/types/Param";
 import { DatasetComponent, PlotDatasetInfo, Dataset } from "./DatasetComponent";
@@ -8,7 +8,7 @@ import { DateTimeDataSource } from "@/components/DataSource/DateTimeDataSource";
 import { CategoryDataSource } from "@/components/DataSource/CategoryDataSource";
 import { NumericDataSource } from "@/components/DataSource/NumericDataSource";
 import { DataItem } from "@/types/DataItem";
-import { PlotIdentifier } from "./PlotIdentity";
+import { PlotIdentifier } from "./PlotIdentitier";
 import { DataSourceType } from "@/types/DataSourceType";
 
 export interface DatasetConfig {
@@ -141,8 +141,8 @@ export class DatasetBuilder {
 
       const facet = identifier.getFacet();
       const category = identifier.getCategory();
-      const valueType = identifier.getvalueType();
       const subgroup = identifier.getSubgroup();
+      const valueType = identifier.getvalueType();
 
       const hasAggregation = valueParams.some(
         (value) => !isEmpty(value.aggregation),
@@ -157,7 +157,6 @@ export class DatasetBuilder {
       let dataSource: AbstractDataSource;
       switch (dataSourceType) {
         case "date":
-          // TODO: dateTimeDataSource
           dataSource = new DateTimeDataSource(
             data,
             valueParams,
@@ -205,8 +204,8 @@ export class DatasetBuilder {
 
   static getPaginateDatasets(
     datasets: DatasetComponent[],
-    pageIndex: number,
     pageSize: number,
+    pageIndex = 0,
   ): DatasetComponent[] {
     const facetNames = DatasetBuilder.getNamesWithParam("facetName")(datasets);
     const categoryNames = DatasetBuilder.getNamesWithParam("categoryName")(
@@ -251,6 +250,27 @@ export class DatasetBuilder {
       }
     }
     return paginateDatasets;
+  }
+
+  private selectDataWithParam(
+    valueNames: string[],
+    dimensionName: string,
+    facetName?: string,
+    categoryName?: string,
+    subgroupName?: string,
+  ) {
+    return (data: DataItem[]): DataItem[] => {
+      const chain = flow(compact, uniq);
+      const selectedFields = chain([
+        ...valueNames,
+        dimensionName,
+        facetName,
+        categoryName,
+        subgroupName,
+      ]);
+
+      return data.map((item: DataItem) => pick(item, selectedFields));
+    };
   }
 
   private hasMultiplePlots(

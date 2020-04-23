@@ -1,7 +1,7 @@
 import { AbstractComponent } from "../AbstractComponent";
 import { GridConfig } from "./GridConfig";
 
-export interface SingleGrid {
+export interface Grid {
   left: string | number;
   right: string | number;
   bottom: string | number;
@@ -21,13 +21,13 @@ export interface SingleGridParam {
   sidePadding: number;
 }
 
-export class GridComponent extends AbstractComponent<SingleGrid[]> {
+export class GridComponent extends AbstractComponent<Grid[]> {
   private readonly DEFAULT_COL_GAP_SIZE = 8;
   private readonly DEFAULT_ROW_GAP_SIZE = 7;
   private readonly DEFAULT_TOP_PADDING = 5;
   private readonly DEFAULT_BOTTOM_PADDING = 7;
   private readonly DEFAULT_SIDE_PADDING = 5;
-  private readonly DEFAULT_GRIDS_SETTING: SingleGrid[] = [
+  private readonly DEFAULT_GRIDS_SETTING: Grid[] = [
     {
       left: "3%",
       right: "5%",
@@ -41,7 +41,7 @@ export class GridComponent extends AbstractComponent<SingleGrid[]> {
 
   constructor(config: GridConfig = { rows: 1, cols: 1 }) {
     super();
-    this.fieldName = "grid";
+    this.optionName = "grid";
     this._config = config;
   }
 
@@ -64,7 +64,7 @@ export class GridComponent extends AbstractComponent<SingleGrid[]> {
     topPadding = this.DEFAULT_TOP_PADDING,
     bottomPadding = this.DEFAULT_BOTTOM_PADDING,
     sidePadding = this.DEFAULT_SIDE_PADDING,
-  }: GridConfig): SingleGrid[] {
+  }: GridConfig): Grid[] {
     if (rows === 1 && cols === 1) {
       return this.DEFAULT_GRIDS_SETTING;
     }
@@ -99,7 +99,7 @@ export class GridComponent extends AbstractComponent<SingleGrid[]> {
     return grids;
   }
 
-  private getGrid(gridParam: SingleGridParam): SingleGrid {
+  private getGrid(gridParam: SingleGridParam): Grid {
     const {
       width,
       height,
@@ -115,7 +115,7 @@ export class GridComponent extends AbstractComponent<SingleGrid[]> {
     const verticalInterval = height + rowGap;
     const left = sidePadding + colIndex * horizontalInterval;
     const top = topPadding + rowIndex * verticalInterval;
-    const right = 100 * (left * width);
+    const right = 100 * (left + width);
     const bottom = 100 * (top + height);
 
     return {
@@ -128,7 +128,7 @@ export class GridComponent extends AbstractComponent<SingleGrid[]> {
     };
   }
 
-  public toEchartOption(): SingleGrid[] {
+  public toEchartOption(): Grid[] {
     return this.getGridSetting(this.config);
   }
 }

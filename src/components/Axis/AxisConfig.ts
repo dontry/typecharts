@@ -3,7 +3,7 @@ import { Interval } from "@/types/Interval";
 import { Minmax } from "@/types/Minmax";
 
 export interface AxisConfig {
-  name: string;
+  name?: string;
   scale: boolean;
   show: boolean;
   min?: Minmax;

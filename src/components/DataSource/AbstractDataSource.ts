@@ -12,7 +12,7 @@ export abstract class AbstractDataSource {
   ): DataSourceType {
     if (dimensionType === "date") {
       return "date";
-    } else if (hasAggregation && valueType === "string") {
+    } else if (hasAggregation && dimensionType === "string") {
       return "string";
     } else {
       return "number";

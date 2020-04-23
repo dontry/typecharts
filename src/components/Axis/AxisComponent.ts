@@ -5,16 +5,16 @@ import { Minmax } from "@/types/Minmax";
 import { DataValue } from "@/types/DataItem";
 
 export type Axis = EChartOption.BasicComponents.CartesianAxis;
-type AxisType = "category" | "time" | "value";
-type AxisDimension = "x" | "y";
+export type AxisType = "category" | "time" | "value";
+export type AxisDimension = "x" | "y";
 
-export interface AxisSettingConfig extends AxisConfig {
-  data: DataValue[];
-  name: string;
-  gridIndex: number;
+export interface AxisComponentConfig extends AxisConfig {
   type: AxisType;
-  scale: boolean;
+  facetName: string;
+  axisDimension: AxisDimension;
+  gridIndex: number;
   count: number;
+  data?: DataValue[];
 }
 
 export class AxisComponent extends AbstractComponent<Axis> {
@@ -22,6 +22,8 @@ export class AxisComponent extends AbstractComponent<Axis> {
 
   protected _data: DataValue[] | undefined = [];
   protected _name = "";
+  private _facetName = "";
+
   protected _gridIndex = -1;
   protected _scale = true;
   protected _count = 1;
@@ -36,7 +38,7 @@ export class AxisComponent extends AbstractComponent<Axis> {
 
   constructor(axis: AxisDimension) {
     super();
-    this.fieldName = axis;
+    this.optionName = `${axis}Axis`;
     this.nameGap = AxisComponent.DEFAULT_NAME_GAP;
   }
 
@@ -63,6 +65,12 @@ export class AxisComponent extends AbstractComponent<Axis> {
   }
   public set name(value: string) {
     this._name = value;
+  }
+  public get facetName(): string {
+    return this._facetName;
+  }
+  public set facetName(value: string) {
+    this._facetName = value;
   }
   public get data(): DataValue[] | undefined {
     return this._data;
@@ -126,6 +134,7 @@ export class AxisComponent extends AbstractComponent<Axis> {
       data: this._data,
       nameGap: this._nameGap,
       boundaryGap: this.boundaryGap,
+      gridIndex: this._gridIndex,
       nameLocation: "center",
       show: this._show,
       scale: this._scale,

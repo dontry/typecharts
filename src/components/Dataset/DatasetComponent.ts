@@ -20,6 +20,7 @@ export class DatasetComponent extends AbstractComponent<Dataset> {
     private info: PlotDatasetInfo,
   ) {
     super();
+    this.optionName = "dataset";
   }
 
   public getEchartOptionDataset(): EChartOption.Dataset {
@@ -78,7 +79,7 @@ export class DatasetComponent extends AbstractComponent<Dataset> {
     return {
       id: this.id,
       source: this.source,
-      dimensions: this.dimensions,
+      dimensions: this.dimensions.length === 0 ? undefined : this.dimensions,
     };
   }
 }

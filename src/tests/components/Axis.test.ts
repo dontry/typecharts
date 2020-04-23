@@ -62,6 +62,7 @@ describe("Axis", () => {
 
       const plotDatasets = builder.getDatasets();
       const xConfig: AxisGroupConfig = {
+        name: "sepallength",
         axis: "x",
         dataParams: [dimensionParam],
         count: plotDatasets.length,
@@ -111,7 +112,6 @@ describe("Axis", () => {
         expect(yAxisGroupComponent[0].show).toBe(true);
         expect(yAxisGroupComponent[0].scale).toBe(true);
         expect(yAxisGroupComponent[0].position).toBe("bottom");
-        expect(yAxisGroupComponent[0].name).toBe("sepallength");
       }
     });
 
@@ -184,7 +184,7 @@ describe("Axis", () => {
         expect(xAxisGroupComponent[0].show).toBe(true);
         expect(xAxisGroupComponent[0].scale).toBe(true);
         expect(xAxisGroupComponent[0].position).toBe("left");
-        expect(xAxisGroupComponent[0].name).toBe("Central");
+        expect(xAxisGroupComponent[0].name).toBe("");
       }
 
       const yConfig: AxisGroupConfig = {
@@ -210,7 +210,6 @@ describe("Axis", () => {
         expect(yAxisGroupComponent[0].show).toBe(true);
         expect(yAxisGroupComponent[0].scale).toBe(true);
         expect(yAxisGroupComponent[0].position).toBe("bottom");
-        expect(yAxisGroupComponent[0].name).toBe("Central");
       }
     });
   });

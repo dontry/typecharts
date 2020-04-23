@@ -1,10 +1,11 @@
-import { Axis, AxisComponent } from "./AxisComponent";
 import {
+  Axis,
+  AxisComponent,
+  AxisComponentConfig,
   AxisDimension,
   AxisType,
-  AxisBuilder,
-  AxisComponentConfig,
-} from "./AxisBuilder";
+} from "./AxisComponent";
+import { AxisBuilder } from "./AxisBuilder";
 import { DataParam } from "@/types/Param";
 import { EChartOption } from "echarts";
 import { flow, map, uniq, sortBy } from "lodash/fp";
@@ -27,10 +28,11 @@ export interface AxisGroupConfig {
   dataParams: DataParam[];
   count: number;
   onZero: boolean;
-  uniformMinmax?: boolean;
   scale: boolean;
   show: boolean;
+  uniformMinmax?: boolean;
   isDimension?: boolean;
+  name?: string;
   data?: DataSourceItem[] | DataSourceItem[][];
   custom?: EChartOption.BasicComponents.CartesianAxis;
 }
@@ -125,6 +127,7 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
       show,
       data,
       isDimension,
+      name,
     } = this.config;
     const facetNames = this.getFacetNamesFromDatasets(this.datasets);
     const axisType = this.getAxisType(dataParams[0]);
@@ -179,7 +182,8 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
           min: axisMin,
           max: axisMax,
           count: count,
-          name: facetName,
+          facetName: facetName,
+          name: name,
           show: show,
           scale: scale,
         };

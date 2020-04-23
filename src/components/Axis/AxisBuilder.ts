@@ -1,20 +1,8 @@
 import { AbstractComponentBuilder } from "../AbstractComponentBuilder";
-import { Axis, AxisComponent } from "./AxisComponent";
-import { AxisConfig } from "./AxisConfig";
+import { Axis, AxisComponent, AxisComponentConfig } from "./AxisComponent";
 import { Minmax } from "@/types/Minmax";
 import { format } from "d3-format";
 import { DataValue } from "@/types/DataItem";
-
-export type AxisType = "category" | "value" | "time";
-export type AxisDimension = "x" | "y";
-
-export interface AxisComponentConfig extends AxisConfig {
-  type: AxisType;
-  axisDimension: AxisDimension;
-  gridIndex: number;
-  count: number;
-  data?: DataValue[];
-}
 
 export class AxisBuilder extends AbstractComponentBuilder<Axis, AxisComponent> {
   constructor(protected config: AxisComponentConfig) {
@@ -33,8 +21,12 @@ export class AxisBuilder extends AbstractComponentBuilder<Axis, AxisComponent> {
     this.component.count = count;
   }
 
-  public setName(name: string): void {
+  public setName(name = ""): void {
     this.component.name = name;
+  }
+
+  public setFacetName(name = ""): void {
+    this.component.facetName = name;
   }
 
   public setMin(min?: Minmax): void {
@@ -66,8 +58,6 @@ export class AxisBuilder extends AbstractComponentBuilder<Axis, AxisComponent> {
       this.component.nameGap = nameGap;
     } else if (axisDimension === "y" && max) {
       this.component.nameGap = this.computeNameGap(max);
-    } else {
-      console.warn("setNameGap arguments are invalid");
     }
   }
 
@@ -101,11 +91,13 @@ export class AxisBuilder extends AbstractComponentBuilder<Axis, AxisComponent> {
       nameGap,
       show,
       name,
+      facetName,
       gridIndex,
       count,
     } = this.config;
 
     this.setName(name);
+    this.setFacetName(facetName);
     this.setData(data);
     this.setMin(min);
     this.setMax(max);

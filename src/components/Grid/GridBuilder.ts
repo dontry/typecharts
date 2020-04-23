@@ -1,4 +1,4 @@
-import { GridComponent, SingleGrid } from "./GridComponent";
+import { GridComponent, Grid } from "./GridComponent";
 import { AbstractComponentBuilder } from "../AbstractComponentBuilder";
 
 export interface GridConfig {
@@ -8,7 +8,7 @@ export interface GridConfig {
 }
 
 export class GridBuilder extends AbstractComponentBuilder<
-  SingleGrid[],
+  Grid[],
   GridComponent
 > {
   public static DEFAULT_COLUMN_COUNT = 3;

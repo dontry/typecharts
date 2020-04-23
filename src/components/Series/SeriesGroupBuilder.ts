@@ -25,7 +25,7 @@ export class SeriesGroupBuilder extends AbstractComponentBuilder<
     super(config);
   }
 
-  private getValueSeriesFromPlotDataset(
+  private getPlotSeriesFromPlotDataset(
     plotDataset: DatasetComponent,
     index: number,
     config: SeriesGroupConfig,
@@ -41,9 +41,9 @@ export class SeriesGroupBuilder extends AbstractComponentBuilder<
         categoryName,
       );
       // TODO: flipped attribute, markline attribute
-      const axisIdentifier = facetName !== "" ? facetName : dimensionParam.name;
+      const axisIdentifier = facetName === "" ? dimensionParam.name : facetName;
       const axisIndex = axisGroup.findIndex(
-        (axis) => axis.name === axisIdentifier,
+        (axis) => axis.facetName === axisIdentifier,
       );
       const x = dimensionParam.name;
       const y = valueParam.name;
@@ -94,7 +94,7 @@ export class SeriesGroupBuilder extends AbstractComponentBuilder<
   public build(): SeriesComponent[] {
     const components = flatten(
       this.datasets.map((plotDataset: DatasetComponent, index: number) =>
-        this.getValueSeriesFromPlotDataset(plotDataset, index, this.config),
+        this.getPlotSeriesFromPlotDataset(plotDataset, index, this.config),
       ),
     );
     return components;

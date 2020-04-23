@@ -1,43 +1,50 @@
-import { AbstractCartesianChart } from "@charts/AbstractCartesianChart";
+import { DataItem } from "@/types/DataItem";
+import { EntityDiff } from "@/utils/EntityDiff";
+import { DatasetBuilder } from "@/components/Dataset/DatasetBuilder";
+import { AbstractCartesianChart } from "@/charts/AbstractCartesianChart";
+import { BaseChartConfig } from "@/charts/BaseChartConfig";
+import { SeriesType } from "@/components/Series/SeriesComponent";
+import { EChartOption } from "echarts";
 
-export class LineChart extends AbstractCartesianChart {
-  constructor() {
-    super();
+export interface LineChartConfig extends BaseChartConfig {
+  custom?: any;
+}
+
+export class LineChart extends AbstractCartesianChart<LineChartConfig> {
+  protected seriesType: SeriesType = "line";
+  constructor(protected data: DataItem[], protected config: LineChartConfig) {
+    super(data, config);
+    super.constructBuilders();
   }
-  public setXAxis(): void {
-    throw new Error("Method not implemented.");
+
+  public compareConfig(newConfig: LineChartConfig): void {
+    const diff = new EntityDiff(this.config, newConfig);
+    // TODO: Update chart based on diff;
+    this.config = newConfig;
   }
-  public setYAxis(): void {
-    throw new Error("Method not implemented.");
-  }
-  public setDataset(): void {
-    throw new Error("Method not implemented.");
-  }
-  public setColors(): void {
-    throw new Error("Method not implemented.");
-  }
-  public setDimension(): void {
-    throw new Error("Method not implemented.");
-  }
-  public setValues(): void {
-    throw new Error("Method not implemented.");
-  }
-  public setSubgroups(): void {
-    throw new Error("Method not implemented.");
-  }
-  public setGrids(): void {
-    throw new Error("Method not implemented.");
-  }
-  public setSeries(): void {
-    throw new Error("Method not implemented.");
-  }
-  public setLengend(): void {
-    throw new Error("Method not implemented.");
-  }
-  public setLayout(): void {
-    throw new Error("Method not implemented.");
-  }
-  public pipeline(): echarts.EChartOption<echarts.EChartOption.Series> {
-    throw new Error("Method not implemented.");
+
+  public buildEChartOption(): EChartOption {
+    const xAxisGroupComponent = this.xAxisGroupBuilder.build();
+    const yAxisGroupComponent = this.yAxisGroupBuilder.build();
+    const gridComponent = this.gridBuilder.build();
+    const seriesGroupComponent = this.seriesGroupBuilder.build();
+    const pageSize = this.gridBuilder.getCols() * this.gridBuilder.getRows();
+    const pageIndex = this.config.pageIndex;
+    const paginateDatasets = DatasetBuilder.getPaginateDatasets(
+      this.plotDatasets,
+      pageSize,
+      pageIndex,
+    );
+    // const datasetGroupComponent = new DatasetGroupComponent(paginateDatasets);
+
+    const pipeline = [
+      paginateDatasets,
+      xAxisGroupComponent,
+      yAxisGroupComponent,
+      gridComponent,
+      seriesGroupComponent,
+    ];
+
+    return this.generateEChartOptionWithPipeline(pipeline);
   }
 }
