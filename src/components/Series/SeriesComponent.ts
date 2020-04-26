@@ -3,7 +3,7 @@ import { PlotDatasetInfo } from "../Dataset/DatasetComponent";
 import { Encode } from "@/types/Encode";
 import { IconType } from "@/types/IconType";
 
-export type SeriesType = "bar" | "line" | "pie";
+export type SeriesType = "bar" | "line" | "pie" | "scatter";
 export interface Series {
   id?: string;
   type: SeriesType;

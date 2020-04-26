@@ -53,6 +53,7 @@ describe("Line Chart", () => {
     expect(dataset.length).toBe(1);
     expect(grid.length).toBe(1);
     expect(series.length).toBe(1);
+    expect(series[0].type).toBe("line");
     expect(xAxis.length).toBe(1);
     expect(xAxis[0].name).toBe("xAxis");
     expect(yAxis.length).toBe(1);
