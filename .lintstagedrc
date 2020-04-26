@@ -1,6 +1,6 @@
  {
   "**/*.+(js|jsx|json|yml|yaml|css|less|scss|ts|tsx|md|graphql|mdx)": [
-    "eslint --ignore-path .gitignore --ext .ts",
+    "eslint --ignore-path .gitignore --ext .ts --fix",
     "prettier --write --list-different",
     "jest --findRelatedTests",
     "git add",

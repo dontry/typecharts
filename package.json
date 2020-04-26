@@ -8,6 +8,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "lint": "./node_modules/.bin/eslint --max-warnings=0 --ignore-path .gitignore --ext .js,.ts, .",
+    "lint:fix": "./node_modules/.bin/eslint --fix --ignore-path .gitignore --ext .js,.ts, .",
     "prettier": "./node_modules/.bin/prettier   \"**/*.+(js|jsx|json|yml|yaml|css|less|scss|ts|tsx|md|mdx|graphql|vue)\" --ignore-path=.eslintignore",
     "validate": "npm run prettier -- --list-different",
     "format": "npm run prettier -- --write"
