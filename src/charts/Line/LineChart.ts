@@ -2,11 +2,11 @@ import { DataItem } from "@/types/DataItem";
 import { EntityDiff } from "@/utils/EntityDiff";
 import { DatasetBuilder } from "@/components/Dataset/DatasetBuilder";
 import { AbstractCartesianChart } from "@/charts/AbstractCartesianChart";
-import { BaseChartConfig } from "@/charts/BaseChartConfig";
 import { SeriesType } from "@/components/Series/SeriesComponent";
 import { EChartOption } from "echarts";
+import { BaseCartesianChartConfig } from "../BaseCartesianChartConfig";
 
-export interface LineChartConfig extends BaseChartConfig {
+export interface LineChartConfig extends BaseCartesianChartConfig {
   custom?: any;
 }
 
@@ -14,7 +14,7 @@ export class LineChart extends AbstractCartesianChart<LineChartConfig> {
   protected seriesType: SeriesType = "line";
   constructor(protected data: DataItem[], protected config: LineChartConfig) {
     super(data, config);
-    super.constructBuilders();
+    super.constructComponentBuilders();
   }
 
   public compareConfig(newConfig: LineChartConfig): void {

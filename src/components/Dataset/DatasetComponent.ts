@@ -23,7 +23,7 @@ export class DatasetComponent extends AbstractComponent<Dataset> {
     this.optionName = "dataset";
   }
 
-  public getEchartOptionDataset(): EChartOption.Dataset {
+  public getEChartOptionDataset(): EChartOption.Dataset {
     return {
       id: this.id,
       source: this.source,
@@ -75,7 +75,7 @@ export class DatasetComponent extends AbstractComponent<Dataset> {
     }
   }
 
-  public toEchartOption(): Dataset {
+  public toEChartOption(): Dataset {
     return {
       id: this.id,
       source: this.source,

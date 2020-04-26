@@ -8,36 +8,43 @@ export interface Series {
   id?: string;
   type: SeriesType;
   name: string;
-  encode: Encode;
-  datasetIndex: number;
-  xAxisIndex: number;
-  yAxisIndex: number;
+  data?: any[];
+  encode?: Encode;
+  center?: string[];
+  datasetIndex?: number;
+  xAxisIndex?: number;
+  yAxisIndex?: number;
   symbol?: IconType;
   symbolSize?: number;
   cursor?: "pointer" | "not-allow";
   sampling?: "average" | "max" | "min" | "sum";
 }
 
-export interface SeriesComponentConfig {
+export interface SeriesComponentConfig extends BaseSeriesComponentConfig {
+  axisIndex: number;
+  encode: Encode;
+}
+
+export interface BaseSeriesComponentConfig {
   type: SeriesType;
   name: string;
   info: PlotDatasetInfo;
-  encode: Encode;
-  color?: string;
-  axisIndex: number;
   datasetIndex: number;
+  color?: string;
 }
 
-export class SeriesComponent extends AbstractComponent<Series> {
-  private _type!: SeriesType;
-  private _name = "";
-  private _symbolSize = 5;
-  private _datasetIndex!: number;
-  private _xAxisIndex!: number;
-  private _yAxisIndex!: number;
-  private _info!: PlotDatasetInfo;
-  private _encode!: Encode;
-  private _color: string | undefined;
+export class SeriesComponent<
+  K extends Series = Series
+> extends AbstractComponent<K> {
+  protected _type!: SeriesType;
+  protected _name = "";
+  protected _symbolSize = 5;
+  protected _datasetIndex!: number;
+  protected _xAxisIndex!: number;
+  protected _yAxisIndex!: number;
+  protected _info!: PlotDatasetInfo;
+  protected _encode!: Encode;
+  protected _color: string | undefined;
 
   constructor() {
     super();
@@ -99,7 +106,7 @@ export class SeriesComponent extends AbstractComponent<Series> {
     this._color = value;
   }
 
-  toEchartOption(): Series {
+  public toEChartOption(): K {
     return {
       id: this.id,
       type: this._type,
@@ -108,6 +115,6 @@ export class SeriesComponent extends AbstractComponent<Series> {
       xAxisIndex: this._xAxisIndex,
       yAxisIndex: this._yAxisIndex,
       datasetIndex: this._datasetIndex,
-    };
+    } as K;
   }
 }

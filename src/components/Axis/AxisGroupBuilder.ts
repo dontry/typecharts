@@ -48,6 +48,10 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
     super(config);
   }
 
+  public initializeComponent(axis: AxisDimension): AxisComponent {
+    return new AxisComponent(axis);
+  }
+
   private getFacetNamesFromDatasets(datasets: DatasetComponent[]): string[] {
     const chain = flow(
       map(this.getFacetNameFromDataset),

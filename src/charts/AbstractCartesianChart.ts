@@ -1,46 +1,29 @@
-import {
-  DatasetConfig,
-  DatasetBuilder,
-} from "@/components/Dataset/DatasetBuilder";
+import { DatasetBuilder } from "@/components/Dataset/DatasetBuilder";
 import { DataItem } from "@/types/DataItem";
 import {
   AxisGroupBuilder,
   AxisGroupConfig,
 } from "@/components/Axis/AxisGroupBuilder";
 import { DatasetComponent } from "@/components/Dataset/DatasetComponent";
-import { GridBuilder, GridConfig } from "@/components/Grid/GridBuilder";
+import { AbstractChart } from "./AbstractChart";
+import { BaseCartesianChartConfig } from "./BaseCartesianChartConfig";
 import { AxisComponent } from "@/components/Axis/AxisComponent";
-import { SeriesGroupBuilder } from "@/components/Series/SeriesGroupBuilder";
-import { SeriesGroupConfig } from "@/components/Series/SeriesConfig";
 import { SeriesType } from "@/components/Series/SeriesComponent";
-import { EChartOption } from "echarts";
-import { AbstractComponent, ChartOption } from "@/components/AbstractComponent";
-import { isNil, isArray } from "lodash";
-import { BaseChartConfig } from "./BaseChartConfig";
+import { CartesianSeriesGroupConfig } from "@/components/Series/SeriesConfig";
+import { CartesianSeriesGroupBuilder } from "@/components/Series/CartesianSeriesGroupBuilder";
 
 export abstract class AbstractCartesianChart<
-  T extends BaseChartConfig = BaseChartConfig
-> {
-  protected datasetBuilder!: DatasetBuilder;
-  protected gridBuilder!: GridBuilder;
+  T extends BaseCartesianChartConfig = BaseCartesianChartConfig
+> extends AbstractChart {
   protected xAxisGroupBuilder!: AxisGroupBuilder;
   protected yAxisGroupBuilder!: AxisGroupBuilder;
-  protected seriesGroupBuilder!: SeriesGroupBuilder;
-  protected seriesType!: SeriesType;
-  protected plotDatasets!: DatasetComponent[];
 
-  constructor(protected data: DataItem[], protected config: T) {}
+  constructor(protected data: DataItem[], protected config: T) {
+    super(data, config);
+  }
 
-  public constructBuilders(): void {
-    this.datasetBuilder = this.constructDatasetBuilder(this.data, this.config);
-    this.plotDatasets = this.datasetBuilder.getDatasets();
-    const facetNames = DatasetBuilder.getNamesWithParam("facetName")(
-      this.plotDatasets,
-    );
-    this.gridBuilder = this.constructGridBuilder(
-      facetNames.length,
-      this.config,
-    );
+  public constructComponentBuilders(): void {
+    super.constructComponentBuilders();
     const pageSize = this.gridBuilder.getCols() * this.gridBuilder.getRows();
     const pageIndex = this.config.pageIndex;
     const paginateDatasets = DatasetBuilder.getPaginateDatasets(
@@ -48,7 +31,6 @@ export abstract class AbstractCartesianChart<
       pageSize,
       pageIndex,
     );
-
     this.xAxisGroupBuilder = this.constructXAxisGroupBuilder(
       paginateDatasets,
       this.config,
@@ -63,29 +45,9 @@ export abstract class AbstractCartesianChart<
     this.seriesGroupBuilder = this.constructSeriesGroupBuilder(
       paginateDatasets,
       this.seriesType,
-      xAxisGroup,
       this.config,
+      xAxisGroup,
     );
-  }
-
-  public constructDatasetBuilder(data: DataItem[], config: T): DatasetBuilder {
-    const datasetConfig: DatasetConfig = {
-      valueParams: config.valueParams,
-      dimensionParam: config.dimensionParam,
-      facetParam: config.facetParam,
-      categoryParam: config.categoryParam,
-      subgroupParam: config.subgroupParam,
-      orderBy: config.orderBy,
-    };
-    return new DatasetBuilder(data, datasetConfig);
-  }
-
-  public constructGridBuilder(facetCount: number, config: T): GridBuilder {
-    const gridConfig: GridConfig = {
-      facetCount,
-      ...config.layout,
-    };
-    return new GridBuilder(gridConfig);
   }
 
   public constructXAxisGroupBuilder(
@@ -98,7 +60,7 @@ export abstract class AbstractCartesianChart<
       dataParams: [config.dimensionParam],
       isDimension: true,
       count,
-      ...config.xAxisConfig,
+      ...config.xAxis,
     };
     const xAxisGroupBuilder = new AxisGroupBuilder(datasets, axisGroupConfig);
     return xAxisGroupBuilder;
@@ -106,7 +68,7 @@ export abstract class AbstractCartesianChart<
 
   public constructYAxisGroupBuilder(
     datasets: DatasetComponent[],
-    config: BaseChartConfig,
+    config: BaseCartesianChartConfig,
     count: number,
   ): AxisGroupBuilder {
     const axisGroupConfig: AxisGroupConfig = {
@@ -114,7 +76,7 @@ export abstract class AbstractCartesianChart<
       dataParams: config.valueParams,
       isDimension: false,
       count,
-      ...config.yAxisConfig,
+      ...config.yAxis,
     };
     const yAxisGroupBuilder = new AxisGroupBuilder(datasets, axisGroupConfig);
     return yAxisGroupBuilder;
@@ -123,64 +85,16 @@ export abstract class AbstractCartesianChart<
   public constructSeriesGroupBuilder(
     datasets: DatasetComponent[],
     seriesType: SeriesType,
-    axisGroup: AxisComponent[],
     config: T,
-  ): SeriesGroupBuilder {
-    const seriesGroupConfig: SeriesGroupConfig = {
+    axisGroup: AxisComponent[] = [],
+  ): CartesianSeriesGroupBuilder {
+    const seriesGroupConfig: CartesianSeriesGroupConfig = {
       axisGroup: axisGroup,
       type: seriesType,
       valueParams: config.valueParams,
       dimensionParam: config.dimensionParam,
     };
 
-    return new SeriesGroupBuilder(datasets, seriesGroupConfig);
-  }
-
-  public abstract compareConfig(newConfig: BaseChartConfig): void;
-  public abstract buildEChartOption(): EChartOption;
-
-  protected generateEChartOptionWithPipeline(
-    pipeline: (
-      | AbstractComponent<ChartOption>
-      | AbstractComponent<ChartOption>[]
-      | null
-    )[],
-  ): EChartOption {
-    return pipeline.reduce(
-      (
-        option: any,
-        component:
-          | AbstractComponent<ChartOption>
-          | AbstractComponent<ChartOption>[]
-          | null,
-      ) => {
-        let field;
-        if (isNil(component)) {
-          return option;
-        }
-        if (isArray(component)) {
-          const components = component;
-          const optionName = components[0].getFieldName();
-          field = {
-            [optionName]: components.map(
-              (com: AbstractComponent<ChartOption>) => com.toEchartOption(),
-            ),
-          };
-        } else {
-          const optionName = component.getFieldName();
-          field = { [optionName]: component.toEchartOption() };
-        }
-        return {
-          ...option,
-          ...field,
-        };
-      },
-      {},
-    );
-  }
-
-  public toJson(): string {
-    const option = this.buildEChartOption();
-    return JSON.stringify(option, null, 2);
+    return new CartesianSeriesGroupBuilder(datasets, seriesGroupConfig);
   }
 }

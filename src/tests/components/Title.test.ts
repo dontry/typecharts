@@ -49,7 +49,7 @@ describe("Title component", () => {
     const builder = new TitleBuilder(config);
     builder.build();
     const component = builder.getComponent();
-    const option = component.toEchartOption();
+    const option = component.toEChartOption();
 
     expect(option).toStrictEqual({ text: "aaa", show: true });
   });

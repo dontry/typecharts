@@ -23,7 +23,7 @@ export class PlotIdentifier {
     return this.category;
   }
 
-  public getvalueType(): DataParamType {
+  public getValueType(): DataParamType {
     return this.valueType;
   }
 

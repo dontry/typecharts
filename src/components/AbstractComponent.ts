@@ -16,5 +16,5 @@ export abstract class AbstractComponent<T> implements BaseOption<T> {
   getFieldName(): string {
     return this.optionName;
   }
-  public abstract toEchartOption(): T;
+  public abstract toEChartOption(): T;
 }

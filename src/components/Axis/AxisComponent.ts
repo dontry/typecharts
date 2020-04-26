@@ -10,7 +10,7 @@ export type AxisDimension = "x" | "y";
 
 export interface AxisComponentConfig extends AxisConfig {
   type: AxisType;
-  facetName: string;
+  facetName?: string;
   axisDimension: AxisDimension;
   gridIndex: number;
   count: number;
@@ -128,7 +128,7 @@ export class AxisComponent extends AbstractComponent<Axis> {
     this._splitNumber = value;
   }
 
-  public toEchartOption(): Axis {
+  public toEChartOption(): Axis {
     return {
       name: this._name,
       data: this._data,

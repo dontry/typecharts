@@ -6,8 +6,7 @@ export abstract class AbstractDataSource {
   constructor(protected data: DataItem[]) {}
   public abstract transformToDataArray(): DataItem[];
   public static getDataSourceType(
-    valueType: DataParamType,
-    dimensionType: DataParamType,
+    dimensionType: DataParamType = "number",
     hasAggregation: boolean,
   ): DataSourceType {
     if (dimensionType === "date") {

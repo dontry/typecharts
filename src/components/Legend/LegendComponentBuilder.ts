@@ -14,6 +14,9 @@ export class LegendBuilder extends AbstractComponentBuilder<
     protected config: LegendConfig,
   ) {
     super(config);
+  }
+
+  public initializeComponent(): void {
     this.component = new LegendComponent();
   }
 

@@ -4,10 +4,13 @@ import { Color } from "@/types/Color";
 import { SeriesType } from "./SeriesComponent";
 
 export interface SeriesGroupConfig {
-  axisGroup: AxisComponent[];
   type: SeriesType;
   valueParams: DataParam[];
+}
+
+export interface CartesianSeriesGroupConfig extends SeriesGroupConfig {
   dimensionParam: DataParam;
+  axisGroup?: AxisComponent[];
   colors?: Color[];
   custom?: any;
 }

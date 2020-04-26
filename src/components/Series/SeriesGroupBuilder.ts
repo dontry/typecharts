@@ -1,72 +1,26 @@
 import { AbstractComponentBuilder } from "../AbstractComponentBuilder";
-import {
-  SeriesComponent,
-  SeriesComponentConfig,
-  Series,
-} from "./SeriesComponent";
+import { SeriesComponent, Series } from "./SeriesComponent";
 import { SeriesGroupConfig } from "./SeriesConfig";
 import { DatasetComponent } from "../Dataset/DatasetComponent";
-import { DataParam } from "@/types/Param";
-import { isNil, flatten } from "lodash";
-import { SeriesBuilder } from "./SeriesBuilder";
+import { isNil, flatten, isArray } from "lodash";
 import { Color } from "@/types/Color";
 
-export class SeriesGroupBuilder extends AbstractComponentBuilder<
-  Series,
-  SeriesComponent
-> {
-  /**
-   *
-   */
-  constructor(
-    protected datasets: DatasetComponent[],
-    protected config: SeriesGroupConfig,
-  ) {
+export abstract class SeriesGroupBuilder<
+  S extends Series = Series,
+  K extends SeriesComponent<S> = SeriesComponent<S>,
+  T extends SeriesGroupConfig = SeriesGroupConfig
+> extends AbstractComponentBuilder<S, K> {
+  constructor(protected datasets: DatasetComponent[], protected config: T) {
     super(config);
   }
 
-  private getPlotSeriesFromPlotDataset(
+  protected abstract getPlotSeriesFromPlotDataset(
     plotDataset: DatasetComponent,
     index: number,
-    config: SeriesGroupConfig,
-  ): SeriesComponent[] {
-    const { valueParams, axisGroup, dimensionParam, type, colors } = config;
-    const valueSeries = valueParams.map((valueParam: DataParam) => {
-      const { facetName, subgroupName, categoryName } = plotDataset.getInfo();
-      // extract series
-      const seriesName = this.getSeriesName(
-        valueParam.name,
-        facetName,
-        subgroupName,
-        categoryName,
-      );
-      // TODO: flipped attribute, markline attribute
-      const axisIdentifier = facetName === "" ? dimensionParam.name : facetName;
-      const axisIndex = axisGroup.findIndex(
-        (axis) => axis.facetName === axisIdentifier,
-      );
-      const x = dimensionParam.name;
-      const y = valueParam.name;
-      const matchedColor = this.getMatchedColor(seriesName, colors);
+    config: T,
+  ): K | K[];
 
-      const config: SeriesComponentConfig = {
-        type: type,
-        name: seriesName,
-        info: plotDataset.getInfo(),
-        encode: { x, y },
-        color: matchedColor?.value,
-        axisIndex: axisIndex,
-        datasetIndex: index,
-      };
-
-      const seriesComponent = new SeriesBuilder(config).build();
-      return seriesComponent;
-    });
-
-    return valueSeries;
-  }
-
-  private getMatchedColor(
+  protected getMatchedColor(
     seriesName = "",
     colors: Color[] = [],
   ): Color | undefined {
@@ -75,7 +29,7 @@ export class SeriesGroupBuilder extends AbstractComponentBuilder<
       : colors.find((color) => color.name === seriesName);
   }
 
-  private getSeriesName(
+  protected getSeriesName(
     valueName: string,
     facetName?: string,
     categoryName?: string,
@@ -91,12 +45,12 @@ export class SeriesGroupBuilder extends AbstractComponentBuilder<
     return seriesName || valueName;
   }
 
-  public build(): SeriesComponent[] {
-    const components = flatten(
-      this.datasets.map((plotDataset: DatasetComponent, index: number) =>
+  public build(): K[] {
+    const series = this.datasets.map(
+      (plotDataset: DatasetComponent, index: number) =>
         this.getPlotSeriesFromPlotDataset(plotDataset, index, this.config),
-      ),
     );
+    const components = isArray(series) ? flatten(series) : series;
     return components;
   }
 }

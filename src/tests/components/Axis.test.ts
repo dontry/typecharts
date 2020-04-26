@@ -1,7 +1,4 @@
-import {
-  AxisBuilder,
-  AxisComponentConfig,
-} from "@/components/Axis/AxisBuilder";
+import { AxisBuilder } from "@/components/Axis/AxisBuilder";
 import path from "path";
 import {
   AxisGroupBuilder,
@@ -11,6 +8,7 @@ import { parseCsvData } from "../fixtures/utils";
 import { DatasetBuilder } from "@/components/Dataset/DatasetBuilder";
 import { DataParam } from "@/types/Param";
 import { NUMBER_AGGREGATION } from "@/types/Aggregation";
+import { AxisComponentConfig } from "@/components/Axis/AxisComponent";
 
 describe("Axis", () => {
   describe("AxisBuilder", () => {

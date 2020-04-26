@@ -19,8 +19,8 @@ export class LegendComponent extends AbstractComponent<Legend> {
   }
   // TODO: getLegendTitlesFromSeries
 
-  public toEchartOption(): Legend {
-    // TODO: Echart option
+  public toEChartOption(): Legend {
+    // TODO: EChart option
     return {
       data: this._data,
     };

@@ -19,6 +19,10 @@ export class GridBuilder extends AbstractComponentBuilder<
 
   constructor(protected config: GridConfig) {
     super(config);
+    this.initializeComponent(config);
+  }
+
+  public initializeComponent(config: GridConfig): void {
     const componentConfig = this.getGridLayout(config);
     this.component = new GridComponent(componentConfig);
   }

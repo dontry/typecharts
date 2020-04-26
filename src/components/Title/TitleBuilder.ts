@@ -10,6 +10,10 @@ export class TitleBuilder extends AbstractComponentBuilder<
 > {
   constructor(protected config?: TitleConfig) {
     super(config);
+    this.initializeComponent();
+  }
+
+  public initializeComponent(): void {
     this.component = new TitleComponent();
   }
 

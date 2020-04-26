@@ -9,7 +9,7 @@ describe("Grid", () => {
     };
     const builder = new GridBuilder(config);
     const component = builder.build();
-    const option = component?.toEchartOption();
+    const option = component?.toEChartOption();
     expect(option).toBeTruthy();
     expect(option!.length).toBe(1);
     expect(option![0].width).toBe("auto");
@@ -23,7 +23,7 @@ describe("Grid", () => {
     };
     const builder = new GridBuilder(config);
     const component = builder.build();
-    const option = component?.toEchartOption();
+    const option = component?.toEChartOption();
     expect(option).toBeTruthy();
     expect(option!.length).toBe(2);
     expect(option![0].width).toBe("41%");
@@ -37,7 +37,7 @@ describe("Grid", () => {
     };
     const builder = new GridBuilder(config);
     const component = builder.build();
-    const option = component?.toEchartOption();
+    const option = component?.toEChartOption();
     expect(option).toBeTruthy();
     expect(option!.length).toBe(1);
     expect(option![0].width).toBe("auto");

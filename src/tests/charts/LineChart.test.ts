@@ -2,12 +2,12 @@ import path from "path";
 import { DataItem } from "@/types/DataItem";
 import { parseCsvData } from "../fixtures/utils";
 import { LineChart } from "@/charts/Line/LineChart";
-import { BaseChartConfig } from "@/charts/BaseChartConfig";
 import { Dataset } from "@/components/Dataset/DatasetComponent";
 import { Grid } from "@/components/Grid/GridComponent";
 import { Series } from "@/components/Series/SeriesComponent";
 import { Axis } from "@/components/Axis/AxisComponent";
 import { NUMBER_AGGREGATION } from "@/types/Aggregation";
+import { BaseCartesianChartConfig } from "@/charts/BaseCartesianChartConfig";
 
 describe("Line Chart", () => {
   let rawData: DataItem[];
@@ -18,7 +18,7 @@ describe("Line Chart", () => {
   });
 
   test("create a line chart with 1 valueParam & 1 dimensionParam", () => {
-    const config: BaseChartConfig = {
+    const config: BaseCartesianChartConfig = {
       valueParams: [
         {
           type: "number",
@@ -26,13 +26,13 @@ describe("Line Chart", () => {
         },
       ],
       dimensionParam: { type: "string", name: "Region" },
-      xAxisConfig: {
+      xAxis: {
         name: "xAxis",
         show: true,
         scale: true,
         onZero: true,
       },
-      yAxisConfig: {
+      yAxis: {
         name: "yAxis",
         show: true,
         scale: true,
@@ -60,7 +60,7 @@ describe("Line Chart", () => {
   });
 
   test("create a line chart with 2 valueParam & 1 dimensionParam", () => {
-    const config: BaseChartConfig = {
+    const config: BaseCartesianChartConfig = {
       valueParams: [
         {
           type: "number",
@@ -72,13 +72,13 @@ describe("Line Chart", () => {
         },
       ],
       dimensionParam: { type: "string", name: "Region" },
-      xAxisConfig: {
+      xAxis: {
         name: "xAxis",
         show: true,
         scale: true,
         onZero: true,
       },
-      yAxisConfig: {
+      yAxis: {
         name: "yAxis",
         show: true,
         scale: true,
@@ -106,7 +106,7 @@ describe("Line Chart", () => {
   });
 
   test("create a line chart with 1 valueParam with mean aggregation & 1 dimensionParam & facetParam", () => {
-    const config: BaseChartConfig = {
+    const config: BaseCartesianChartConfig = {
       valueParams: [
         {
           type: "number",
@@ -116,13 +116,13 @@ describe("Line Chart", () => {
       ],
       dimensionParam: { type: "string", name: "Region" },
       facetParam: { type: "string", name: "State" },
-      xAxisConfig: {
+      xAxis: {
         name: "xAxis",
         show: true,
         scale: true,
         onZero: true,
       },
-      yAxisConfig: {
+      yAxis: {
         name: "yAxis",
         show: true,
         scale: true,

@@ -1,20 +1,24 @@
 import { AbstractComponentBuilder } from "../AbstractComponentBuilder";
 import {
   SeriesComponent,
-  SeriesComponentConfig,
   Series,
   SeriesType,
+  BaseSeriesComponentConfig,
 } from "./SeriesComponent";
 import { PlotDatasetInfo } from "../Dataset/DatasetComponent";
-import { Encode } from "@/types/Encode";
 
-export class SeriesBuilder extends AbstractComponentBuilder<
-  Series,
-  SeriesComponent
-> {
-  constructor(protected config: SeriesComponentConfig) {
+export class BaseSeriesBuilder<
+  S extends Series = Series,
+  K extends SeriesComponent<S> = SeriesComponent<S>,
+  T extends BaseSeriesComponentConfig = BaseSeriesComponentConfig
+> extends AbstractComponentBuilder<S, K> {
+  constructor(protected config: T) {
     super(config);
-    this.component = new SeriesComponent();
+    this.initializeComponent();
+  }
+
+  public initializeComponent(): void {
+    this.component = new SeriesComponent<Series>() as K;
   }
 
   public setType(type: SeriesType): void {
@@ -25,14 +29,6 @@ export class SeriesBuilder extends AbstractComponentBuilder<
     this.component.name = name;
   }
 
-  public setXAxisIndex(index: number): void {
-    this.component.xAxisIndex = index;
-  }
-
-  public setYAxisIndex(index: number): void {
-    this.component.yAxisIndex = index;
-  }
-
   public setDatasetIndex(index: number): void {
     this.component.datasetIndex = index;
   }
@@ -40,30 +36,16 @@ export class SeriesBuilder extends AbstractComponentBuilder<
     this.component.info = info;
   }
 
-  public setEncode(encode: Encode): void {
-    this.component.encode = encode;
-  }
   public setColor(color: string | undefined): void {
     this.component.color = color;
   }
 
-  public build(): SeriesComponent {
-    const {
-      type,
-      name,
-      info,
-      encode,
-      axisIndex,
-      datasetIndex,
-      color,
-    } = this.config;
+  public build(): K {
+    const { type, name, info, datasetIndex, color } = this.config;
 
     this.setType(type);
     this.setName(name);
-    this.setEncode(encode);
     this.setColor(color);
-    this.setXAxisIndex(axisIndex);
-    this.setYAxisIndex(axisIndex);
     this.setInfo(info);
     this.setDatasetIndex(datasetIndex);
 

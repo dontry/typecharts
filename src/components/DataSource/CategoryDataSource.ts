@@ -1,36 +1,36 @@
 import { AbstractDataSource } from "./AbstractDataSource";
 import { DataParam } from "@/types/Param";
-import { flow, groupBy, values, sortBy, map } from "lodash/fp";
+import { flow, groupBy, values, sortBy, map, compact } from "lodash/fp";
 import { DataItem, DataValue } from "@/types/DataItem";
 import { aggregateDataByValueParam } from "@/utils/misc";
+import { isNil } from "lodash";
 
 export class CategoryDataSource extends AbstractDataSource {
-  private dimensionName: string;
   constructor(
     protected data: DataItem[],
     private valueParams: DataParam[],
-    dimensonParam: DataParam,
+    private groupName: string,
     private orderBy?: string,
   ) {
     super(data);
-    this.dimensionName = dimensonParam.name;
   }
 
   public transformToDataArray(): DataItem[] {
     const chain = flow(
-      groupBy(this.dimensionName),
+      groupBy(this.groupName),
       values,
       sortBy(this.getSortAttribute.bind(this)),
       map(this.getAggregationValues.bind(this)),
+      compact,
     );
     return chain(this.data);
   }
 
   private getSortAttribute(array: DataItem[]): DataValue {
-    return this.orderBy ? array[0][this.orderBy] : array[0][this.dimensionName];
+    return this.orderBy ? array[0][this.orderBy] : array[0][this.groupName];
   }
 
-  private getAggregationValues(array: DataItem[]): DataItem {
+  private getAggregationValues(array: DataItem[]): DataItem | undefined {
     const aggregationValues = this.valueParams.reduce((acc, valueParam) => {
       if (valueParam.aggregation) {
         return {
@@ -42,8 +42,12 @@ export class CategoryDataSource extends AbstractDataSource {
       }
     }, {});
 
+    if (isNil(array[0][this.groupName])) {
+      return;
+    }
+
     return {
-      [this.dimensionName]: array[0][this.dimensionName],
+      [this.groupName]: array[0][this.groupName],
       ...aggregationValues,
     };
   }

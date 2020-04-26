@@ -22,7 +22,7 @@ export class TitleComponent extends AbstractComponent<Title> {
     this._text = value;
   }
 
-  public toEchartOption(): Title {
+  public toEChartOption(): Title {
     return {
       text: this._text,
       show: this._show,

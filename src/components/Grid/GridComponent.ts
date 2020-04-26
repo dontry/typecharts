@@ -128,7 +128,7 @@ export class GridComponent extends AbstractComponent<Grid[]> {
     };
   }
 
-  public toEchartOption(): Grid[] {
+  public toEChartOption(): Grid[] {
     return this.getGridSetting(this.config);
   }
 }

@@ -1,4 +1,4 @@
-export interface ComponentBuilderInterface<T, K> {
+export interface ComponentBuilderInterface<K> {
   getComponent(): K;
   build(): void;
 }

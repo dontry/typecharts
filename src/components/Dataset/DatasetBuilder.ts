@@ -8,12 +8,12 @@ import { DateTimeDataSource } from "@/components/DataSource/DateTimeDataSource";
 import { CategoryDataSource } from "@/components/DataSource/CategoryDataSource";
 import { NumericDataSource } from "@/components/DataSource/NumericDataSource";
 import { DataItem } from "@/types/DataItem";
-import { PlotIdentifier } from "./PlotIdentitier";
+import { PlotIdentifier } from "./PlotIdentifier";
 import { DataSourceType } from "@/types/DataSourceType";
 
 export interface DatasetConfig {
   valueParams: DataParam[];
-  dimensionParam: DataParam;
+  dimensionParam?: DataParam;
   facetParam?: DataParam;
   categoryParam?: DataParam;
   subgroupParam?: DataParam;
@@ -126,7 +126,7 @@ export class DatasetBuilder {
 
   public getDatasetWith(
     valueParams: DataParam[],
-    dimensionParam: DataParam,
+    dimensionParam?: DataParam,
     orderBy?: string,
   ): (arg: [string, DataItem[]]) => DatasetComponent | undefined {
     return ([identifierString, data]: [string, DataItem[]]):
@@ -142,45 +142,48 @@ export class DatasetBuilder {
       const facet = identifier.getFacet();
       const category = identifier.getCategory();
       const subgroup = identifier.getSubgroup();
-      const valueType = identifier.getvalueType();
 
       const hasAggregation = valueParams.some(
         (value) => !isEmpty(value.aggregation),
       );
 
       const dataSourceType = AbstractDataSource.getDataSourceType(
-        valueType,
-        dimensionParam.type,
+        dimensionParam?.type,
         hasAggregation,
       );
 
       let dataSource: AbstractDataSource;
-      switch (dataSourceType) {
-        case "date":
-          dataSource = new DateTimeDataSource(
-            data,
-            valueParams,
-            dimensionParam,
-          );
-          break;
-        case "string":
-          dataSource = new CategoryDataSource(
-            data,
-            valueParams,
-            dimensionParam,
-            orderBy,
-          );
-          break;
-        case "number":
-        default:
-          dataSource = new NumericDataSource(data, orderBy);
-          break;
+
+      if (isNil(dimensionParam)) {
+        dataSource = new NumericDataSource(data, orderBy);
+      } else {
+        switch (dataSourceType) {
+          case "date":
+            dataSource = new DateTimeDataSource(
+              data,
+              valueParams,
+              dimensionParam,
+            );
+            break;
+          case "string":
+            dataSource = new CategoryDataSource(
+              data,
+              valueParams,
+              dimensionParam.name,
+              orderBy,
+            );
+            break;
+          case "number":
+          default:
+            dataSource = new NumericDataSource(data, orderBy);
+            break;
+        }
       }
 
       const source: DataItem[] = dataSource.transformToDataArray();
       const dimensions: string[] = [];
       const info: PlotDatasetInfo = {
-        dimensionName: dimensionParam.name,
+        dimensionName: dimensionParam?.name,
         facetName: facet,
         categoryName: category,
         subgroupName: subgroup,

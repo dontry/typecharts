@@ -21,7 +21,7 @@ describe("CategoryDataSource", () => {
     const dataSource = new CategoryDataSource(
       fruits,
       valueParams,
-      dimensionParam,
+      dimensionParam.name,
       sortBy,
     );
     const dataArray = dataSource.transformToDataArray();
