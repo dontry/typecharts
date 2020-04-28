@@ -115,8 +115,8 @@ export class GridComponent extends AbstractComponent<Grid[]> {
     const verticalInterval = height + rowGap;
     const left = sidePadding + colIndex * horizontalInterval;
     const top = topPadding + rowIndex * verticalInterval;
-    const right = 100 * (left + width);
-    const bottom = 100 * (top + height);
+    const right = left + width;
+    const bottom = top + height;
 
     return {
       left: `${left}%`,

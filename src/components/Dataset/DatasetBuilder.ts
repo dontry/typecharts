@@ -93,9 +93,9 @@ export class DatasetBuilder {
       const subgroup = data[subgroupName];
       const identifier = new PlotIdentifier(
         valueType,
-        typeof facet === "string" ? facet : "",
-        typeof category === "string" ? category : "",
-        typeof subgroup === "string" ? subgroup : "",
+        facet,
+        category,
+        subgroup,
       );
 
       let isExisting = false;
@@ -143,44 +143,12 @@ export class DatasetBuilder {
       const category = identifier.getCategory();
       const subgroup = identifier.getSubgroup();
 
-      const hasAggregation = valueParams.some(
-        (value) => !isEmpty(value.aggregation),
+      const source: DataItem[] = DatasetBuilder.getSource(
+        data,
+        valueParams,
+        dimensionParam,
+        orderBy,
       );
-
-      const dataSourceType = AbstractDataSource.getDataSourceType(
-        dimensionParam?.type,
-        hasAggregation,
-      );
-
-      let dataSource: AbstractDataSource;
-
-      if (isNil(dimensionParam)) {
-        dataSource = new NumericDataSource(data, orderBy);
-      } else {
-        switch (dataSourceType) {
-          case "date":
-            dataSource = new DateTimeDataSource(
-              data,
-              valueParams,
-              dimensionParam,
-            );
-            break;
-          case "string":
-            dataSource = new CategoryDataSource(
-              data,
-              valueParams,
-              dimensionParam.name,
-              orderBy,
-            );
-            break;
-          case "number":
-          default:
-            dataSource = new NumericDataSource(data, orderBy);
-            break;
-        }
-      }
-
-      const source: DataItem[] = dataSource.transformToDataArray();
       const dimensions: string[] = [];
       const info: PlotDatasetInfo = {
         dimensionName: dimensionParam?.name,
@@ -194,7 +162,7 @@ export class DatasetBuilder {
     };
   }
 
-  static getNamesWithParam(param: keyof PlotDatasetInfo) {
+  public static getNamesWithParam(param: keyof PlotDatasetInfo) {
     return (datasets: DatasetComponent[]): string[] => {
       const chain = flow(
         map((dataset: DatasetComponent) => dataset.getInfo()[param]),
@@ -205,7 +173,7 @@ export class DatasetBuilder {
     };
   }
 
-  static getPaginateDatasets(
+  public static getPaginateDatasets(
     datasets: DatasetComponent[],
     pageSize: number,
     pageIndex = 0,
@@ -253,6 +221,51 @@ export class DatasetBuilder {
       }
     }
     return paginateDatasets;
+  }
+
+  public static getSource(
+    data: DataItem[],
+    valueParams: DataParam[],
+    dimensionParam?: DataParam,
+    orderBy?: string,
+  ): DataItem[] {
+    const hasAggregation = valueParams.some(
+      (value) => !isEmpty(value.aggregation),
+    );
+
+    const dataSourceType = AbstractDataSource.getDataSourceType(
+      dimensionParam?.type,
+      hasAggregation,
+    );
+
+    let dataSource: AbstractDataSource;
+
+    if (isNil(dimensionParam)) {
+      dataSource = new NumericDataSource(data, orderBy);
+    } else {
+      switch (dataSourceType) {
+        case "date":
+          dataSource = new DateTimeDataSource(
+            data,
+            valueParams,
+            dimensionParam,
+          );
+          break;
+        case "string":
+          dataSource = new CategoryDataSource(
+            data,
+            valueParams,
+            dimensionParam.name,
+            orderBy,
+          );
+          break;
+        case "number":
+        default:
+          dataSource = new NumericDataSource(data, orderBy);
+          break;
+      }
+    }
+    return dataSource.transformToDataArray();
   }
 
   private selectDataWithParam(

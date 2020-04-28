@@ -93,6 +93,7 @@ export abstract class AbstractCartesianChart<
       type: seriesType,
       valueParams: config.valueParams,
       dimensionParam: config.dimensionParam,
+      custom: config.custom?.series,
     };
 
     return new CartesianSeriesGroupBuilder(datasets, seriesGroupConfig);

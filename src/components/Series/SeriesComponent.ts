@@ -31,6 +31,7 @@ export interface BaseSeriesComponentConfig {
   info: PlotDatasetInfo;
   datasetIndex: number;
   color?: string;
+  custom?: any;
 }
 
 export class SeriesComponent<
@@ -105,7 +106,6 @@ export class SeriesComponent<
   public set color(value: string | undefined) {
     this._color = value;
   }
-
   public toEChartOption(): K {
     return {
       id: this.id,
@@ -115,6 +115,7 @@ export class SeriesComponent<
       xAxisIndex: this._xAxisIndex,
       yAxisIndex: this._yAxisIndex,
       datasetIndex: this._datasetIndex,
+      ...this._custom,
     } as K;
   }
 }

@@ -1,15 +1,23 @@
 import { DataParamType } from "@/types/Param";
+import { DataValue } from "@/types/DataItem";
 
 export class PlotIdentifier {
   private readonly IDENTITY_SYMBOL = "::";
   private readonly DELIMITER = ";";
+  private facet: string;
+  private category: string;
+  private subgroup: string;
 
   constructor(
     private valueType: DataParamType = "number",
-    private facet: string = "",
-    private category: string = "",
-    private subgroup: string = "",
-  ) {}
+    facet?: DataValue,
+    category?: DataValue,
+    subgroup?: DataValue,
+  ) {
+    this.facet = typeof facet === "string" ? facet : "";
+    this.category = typeof category === "string" ? category : "";
+    this.subgroup = typeof subgroup === "string" ? subgroup : "";
+  }
 
   public getFacet(): string {
     return this.facet;

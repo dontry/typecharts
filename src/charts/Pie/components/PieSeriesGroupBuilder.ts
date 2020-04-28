@@ -45,11 +45,11 @@ export class PieSeriesGroupBuilder extends SeriesGroupBuilder<
       this.getPieData(item, valueParams, categoryParam),
     );
     const { facetName, subgroupName, categoryName } = plotDataset.getInfo();
-    const seriesName = this.getSeriesName(
-      "",
+    const seriesName = this.getSeriesIdentifier(
+      valueParams[0].type,
       facetName,
-      subgroupName,
       categoryName,
+      subgroupName,
     );
 
     const layout = config.layout || { rows: 1, cols: 1 };

@@ -7,6 +7,9 @@ export abstract class AbstractComponentBuilder<
 > implements ComponentBuilderInterface<K> {
   protected component!: K;
   constructor(protected config?: Record<string, any>) {}
+  public setCustom(custom: any): void {
+    this.component.custom = custom;
+  }
   protected abstract initializeComponent(args?: any): void;
   public abstract build(): K | null | (K | null)[];
   public getComponent(): K {

@@ -12,4 +12,5 @@ export interface TitleConfig {
   top?: Position;
   right?: Position;
   bottom?: Position;
+  custom?: any;
 }

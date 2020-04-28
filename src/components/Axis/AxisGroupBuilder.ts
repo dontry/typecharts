@@ -8,14 +8,15 @@ import {
 import { AxisBuilder } from "./AxisBuilder";
 import { DataParam } from "@/types/Param";
 import { EChartOption } from "echarts";
-import { flow, map, uniq, sortBy } from "lodash/fp";
+import { flow, map, uniq, sortBy, groupBy, toPairs } from "lodash/fp";
 import { DatasetComponent } from "../Dataset/DatasetComponent";
 import { DataSourceType as DataSourceItem } from "@/types/DataSourceType";
 import { NiceScale } from "@/utils/NiceScale";
-import { isNil, compact } from "lodash";
+import { isNil, compact, flatten } from "lodash";
 import { DataItem, DataValue } from "@/types/DataItem";
 import { naturalSort } from "@/utils/misc";
 import { AbstractComponentBuilder } from "../AbstractComponentBuilder";
+import { DateTimeDataSource } from "../DataSource/DateTimeDataSource";
 
 export enum AxisTypeEnum {
   string = "category",
@@ -55,15 +56,27 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
   private getFacetNamesFromDatasets(datasets: DatasetComponent[]): string[] {
     const chain = flow(
       map(this.getFacetNameFromDataset),
-      uniq,
       compact,
+      uniq,
       naturalSort, // should return string
     );
     return chain(datasets) as string[];
   }
 
-  private getFacetNameFromDataset(dataset: DatasetComponent): string {
-    return dataset.getInfo().facetName || dataset.getInfo().dimensionName || "";
+  private getFacetNameFromDataset(
+    dataset: DatasetComponent,
+  ): string | undefined {
+    return dataset.getInfo().facetName;
+  }
+
+  private getSeriesNameFromDataset(
+    dataset: DatasetComponent,
+  ): string | undefined {
+    return (
+      dataset.getInfo().facetName ||
+      dataset.getInfo().categoryName ||
+      dataset.getInfo().dimensionName
+    );
   }
 
   private getAxisType(dimension: DataParam): AxisType {
@@ -74,17 +87,21 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
   }
 
   private calculateDimensionData(
-    index: number,
-    dimensionParam: DataParam,
     source: DataItem[],
+    dimensionParam: DataParam,
     axisData?: DataSourceItem[] | DataSourceItem[][],
+    axisDataIndex?: number,
   ): DataSourceItem[] {
     let dimensionData: DataSourceItem[];
     if (!isNil(axisData)) {
-      if (axisData[index] instanceof Array) {
-        dimensionData = axisData[index] as DataSourceItem[]; // FIXME: type guards of array
+      if (!isNil(axisDataIndex) && axisData[axisDataIndex] instanceof Array) {
+        dimensionData = (axisData[axisDataIndex] as DataItem[]).map(
+          (data) => data[dimensionParam.name],
+        );
       } else {
-        dimensionData = axisData as DataSourceItem[];
+        dimensionData = (axisData as DataItem[]).map(
+          (data) => data[dimensionParam.name],
+        );
       }
     } else {
       dimensionData = this.getDimensionDataFromSource(source, dimensionParam);
@@ -97,8 +114,8 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
     dimensionParam: DataParam,
   ): DataSourceItem[] {
     // if dimension is date type, then data item should have an extra field data
-    const key = dimensionParam.type === "date" ? "date" : undefined;
-    if (!isNil(key)) {
+    if (dimensionParam.type === "date") {
+      const key = DateTimeDataSource.FORMATTED_TIMESTAMP;
       const chain = flow(
         sortBy(key),
         map((r: DataItem) => r[dimensionParam.name]),
@@ -136,29 +153,76 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
     const facetNames = this.getFacetNamesFromDatasets(this.datasets);
     const axisType = this.getAxisType(dataParams[0]);
 
-    let overallNiceScale: NiceScale;
-
-    if (uniformMinmax === true && axisType === "value") {
-      const [min, max] = DatasetComponent.getMinmaxOfDatasets(
+    let overallNiceScale: NiceScale | undefined = undefined;
+    if (
+      this.shouldCreateOverallNiceScale(
+        facetNames.length,
+        axisType,
+        uniformMinmax,
+      )
+    ) {
+      overallNiceScale = this.createOverallNiceScale(
         this.datasets,
         dataParams,
+        axisType,
+        onZero,
       );
-      overallNiceScale = new NiceScale(min, max, onZero);
     }
 
-    const axisGroup = compact(
-      this.datasets.map((dataset: DatasetComponent, index: number) => {
-        const facetName = this.getFacetNameFromDataset(dataset);
+    let axisGroup: AxisComponent[] = [];
+
+    // not facet
+    if (facetNames.length === 0) {
+      // dimension axis should be retrieved from data source
+      let axisMin, axisMax, axisData;
+      if (axisType === "value" && !isNil(overallNiceScale)) {
+        [axisMin, axisMax] = overallNiceScale.calculate();
+      }
+
+      if (isDimension && axisType !== "value") {
+        const data = flatten(
+          this.datasets.map((dataset) => dataset.getSource()),
+        );
+        axisData = this.calculateDimensionData(data, dataParams[0]);
+      }
+
+      const dimensionName = this.datasets[0].getInfo().dimensionName;
+      const axisConfig: AxisComponentConfig = {
+        data: axisData,
+        type: axisType,
+        axisDimension: axis,
+        gridIndex: 0,
+        min: axisMin,
+        max: axisMax,
+        count: count,
+        identifier: dimensionName,
+        name: name,
+        show: show,
+        scale: scale,
+      };
+      const axisComponent = new AxisBuilder(axisConfig).build();
+      return axisComponent ? [axisComponent] : [];
+    }
+
+    let axisIndex = 0;
+    const chain = flow(
+      groupBy((dataset: DatasetComponent) =>
+        this.getFacetNameFromDataset(dataset),
+      ),
+      toPairs,
+      map(([facetName, datasets]: [string, DatasetComponent[]]) => {
+        const facetData = flatten(
+          datasets.map((dataset) => dataset.getSource()),
+        );
         const facetIndex = facetName ? facetNames.indexOf(facetName) : 0;
 
         let axisNiceScale: NiceScale | undefined = overallNiceScale;
 
         if (uniformMinmax === false && axisType === "value") {
           const [_min, _max] = DatasetComponent.getMinmaxListOfSource(
-            dataset.getSource(),
+            facetData,
             dataParams,
           );
-
           axisNiceScale = new NiceScale(_min, _max, onZero);
         }
         let axisMin, axisMax;
@@ -168,15 +232,16 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
           axisMax = _max;
         }
 
-        // dimension axis should be retrieved from data source
-        const axisData = isDimension
-          ? this.calculateDimensionData(
-              index,
-              dataParams[0],
-              dataset.getSource(),
-              data,
-            )
-          : undefined;
+        let axisData: DataValue[] | undefined = undefined;
+        if (isDimension && axisType !== "value") {
+          axisData = this.calculateDimensionData(
+            facetData,
+            dataParams[0],
+            data,
+            axisIndex,
+          );
+          axisIndex++;
+        }
 
         const axisConfig: AxisComponentConfig = {
           data: axisData,
@@ -186,7 +251,7 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
           min: axisMin,
           max: axisMax,
           count: count,
-          facetName: facetName,
+          identifier: facetName,
           name: name,
           show: show,
           scale: scale,
@@ -196,6 +261,29 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
       }),
     );
 
+    axisGroup = chain(this.datasets);
+
     return axisGroup;
+  }
+
+  protected shouldCreateOverallNiceScale(
+    facetCount: number,
+    axisType: AxisType,
+    uniformMinmax = true,
+  ): boolean {
+    return (uniformMinmax || facetCount === 0) && axisType === "value";
+  }
+
+  protected createOverallNiceScale(
+    datasets: DatasetComponent[],
+    dataParams: DataParam[],
+    axisType: AxisType,
+    onZero: boolean,
+  ): NiceScale {
+    const [min, max] = DatasetComponent.getMinmaxOfDatasets(
+      this.datasets,
+      dataParams,
+    );
+    return new NiceScale(min, max, onZero);
   }
 }

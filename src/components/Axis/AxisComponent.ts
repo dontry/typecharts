@@ -10,11 +10,12 @@ export type AxisDimension = "x" | "y";
 
 export interface AxisComponentConfig extends AxisConfig {
   type: AxisType;
-  facetName?: string;
+  identifier?: string;
   axisDimension: AxisDimension;
   gridIndex: number;
   count: number;
   data?: DataValue[];
+  custom?: any;
 }
 
 export class AxisComponent extends AbstractComponent<Axis> {
@@ -22,7 +23,7 @@ export class AxisComponent extends AbstractComponent<Axis> {
 
   protected _data: DataValue[] | undefined = [];
   protected _name = "";
-  private _facetName = "";
+  private _identifier = "";
 
   protected _gridIndex = -1;
   protected _scale = true;
@@ -66,11 +67,11 @@ export class AxisComponent extends AbstractComponent<Axis> {
   public set name(value: string) {
     this._name = value;
   }
-  public get facetName(): string {
-    return this._facetName;
+  public get identifier(): string {
+    return this._identifier;
   }
-  public set facetName(value: string) {
-    this._facetName = value;
+  public set identifier(value: string) {
+    this._identifier = value;
   }
   public get data(): DataValue[] | undefined {
     return this._data;

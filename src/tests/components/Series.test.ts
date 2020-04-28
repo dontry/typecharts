@@ -77,7 +77,6 @@ describe("SeriesGroupBuilder", () => {
       expect(seriesComponents[0].info.dimensionName).toBe("year");
       expect(seriesComponents[0].info.facetName).toBe("");
       expect(seriesComponents[0].info.subgroupName).toBe("");
-      expect(seriesComponents[0].name).toEqual("value");
       expect(seriesComponents[0].datasetIndex).toBe(0);
       expect(seriesComponents[10].datasetIndex).toBe(10);
     });
@@ -138,7 +137,7 @@ describe("SeriesGroupBuilder", () => {
 
       expect(seriesComponents.length).toBe(8);
       expect(seriesComponents[0].type).toEqual("line");
-      expect(seriesComponents[0].name).toEqual("Central");
+      expect(seriesComponents[0].name).toEqual("facet::Central");
       expect(seriesComponents[0].encode.x).toEqual("Segment");
       expect(seriesComponents[0].encode.y).toEqual("Quantity");
       expect(seriesComponents[0].xAxisIndex).toEqual(0);
@@ -151,7 +150,7 @@ describe("SeriesGroupBuilder", () => {
       expect(seriesComponents[0].datasetIndex).toBe(0);
 
       expect(seriesComponents[1].type).toEqual("line");
-      expect(seriesComponents[1].name).toBe("Central");
+      expect(seriesComponents[1].name).toBe("facet::Central");
       expect(seriesComponents[1].encode.x).toBe("Segment");
       expect(seriesComponents[1].encode.y).toBe("Profit");
       expect(seriesComponents[1].xAxisIndex).toEqual(0);
@@ -159,7 +158,7 @@ describe("SeriesGroupBuilder", () => {
       expect(seriesComponents[1].datasetIndex).toEqual(0);
 
       expect(seriesComponents[2].type).toEqual("line");
-      expect(seriesComponents[2].name).toBe("East");
+      expect(seriesComponents[2].name).toBe("facet::East");
       expect(seriesComponents[2].encode.x).toBe("Segment");
       expect(seriesComponents[2].encode.y).toBe("Quantity");
       expect(seriesComponents[2].xAxisIndex).toEqual(1);

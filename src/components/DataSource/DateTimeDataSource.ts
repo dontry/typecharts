@@ -6,11 +6,12 @@ import { DataItemWithDateTime } from "./DataTimeData";
 import { aggregateDataByValueParam } from "@/utils/misc";
 
 export class DateTimeDataSource extends AbstractDataSource {
+  public static FORMATTED_TIMESTAMP = "__formattedTimestamp__";
+  public static TIMESTAMP = "__timestamp__";
   constructor(
     protected data: DataItem[],
     private valueParams: DataParam[],
     private dimensionParam: DataParam,
-    private dateFormat?: string,
   ) {
     super(data);
   }
@@ -24,7 +25,6 @@ export class DateTimeDataSource extends AbstractDataSource {
         timestamp: timestamp,
         array,
       })),
-      sortBy("formattedDate"),
       map(({ _, array }: { _: number; array: DataItemWithDateTime[] }) => {
         const sortedArray = array.sort(
           (a, b) => a.getTimestamp() - b.getTimestamp(),
@@ -38,6 +38,7 @@ export class DateTimeDataSource extends AbstractDataSource {
           this.dimensionParam,
         ),
       ), // aggregate the dataItem array of the same date into one data item with extra meta of timestamp and date
+      sortBy(DateTimeDataSource.FORMATTED_TIMESTAMP),
     );
     return chain(this.data);
   }
@@ -46,11 +47,7 @@ export class DateTimeDataSource extends AbstractDataSource {
     dataItem: DataItem,
   ): DataItemWithDateTime | undefined {
     try {
-      return new DataItemWithDateTime(
-        dataItem,
-        this.dimensionParam,
-        this.dateFormat,
-      );
+      return new DataItemWithDateTime(dataItem, this.dimensionParam);
     } catch (e) {
       console.warn(`Invalid date: ${dataItem[this.dimensionParam.name]}`);
       console.warn(`Error: ${e.message}`);
@@ -80,8 +77,8 @@ export class DateTimeDataSource extends AbstractDataSource {
     return {
       ...aggregateValues,
       [dimensionParam.name]: array[0].getFormattedDate(),
-      __timestamp__: array[0].getTimestamp(),
-      __formattedTimestamp__: array[0].getFormattedTimestamp(),
+      [DateTimeDataSource.TIMESTAMP]: array[0].getTimestamp(),
+      [DateTimeDataSource.FORMATTED_TIMESTAMP]: array[0].getFormattedTimestamp(),
     };
   }
 }

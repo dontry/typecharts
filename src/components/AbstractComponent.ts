@@ -10,10 +10,18 @@ export type ChartOption = Series | Dataset | Axis | Grid[];
 export abstract class AbstractComponent<T> implements BaseOption<T> {
   protected id: string;
   protected optionName!: string;
+  protected _custom: any = {};
+
   constructor() {
     this.id = uuid();
   }
-  getFieldName(): string {
+  public get custom(): any {
+    return this._custom;
+  }
+  public set custom(value: any) {
+    this._custom = value;
+  }
+  public getFieldName(): string {
     return this.optionName;
   }
   public abstract toEChartOption(): T;

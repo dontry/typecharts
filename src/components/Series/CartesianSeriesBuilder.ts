@@ -32,12 +32,13 @@ export class CartesianSeriesBuilder extends BaseSeriesBuilder<
   }
 
   public build(): SeriesComponent {
-    const { axisIndex, encode } = this.config;
+    const { axisIndex, encode, custom } = this.config;
 
     super.build();
     this.setXAxisIndex(axisIndex);
     this.setYAxisIndex(axisIndex);
     this.setEncode(encode);
+    this.setCustom(custom);
 
     return this.component;
   }

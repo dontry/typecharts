@@ -1,5 +1,10 @@
 import { AbstractComponentBuilder } from "../AbstractComponentBuilder";
-import { Axis, AxisComponent, AxisComponentConfig } from "./AxisComponent";
+import {
+  Axis,
+  AxisComponent,
+  AxisComponentConfig,
+  AxisDimension,
+} from "./AxisComponent";
 import { Minmax } from "@/types/Minmax";
 import { format } from "d3-format";
 import { DataValue } from "@/types/DataItem";
@@ -8,6 +13,10 @@ export class AxisBuilder extends AbstractComponentBuilder<Axis, AxisComponent> {
   constructor(protected config: AxisComponentConfig) {
     super();
     const axis = config.axisDimension;
+    this.initializeComponent(axis);
+  }
+
+  protected initializeComponent(axis: AxisDimension): void {
     this.component = new AxisComponent(axis);
   }
 
@@ -25,8 +34,8 @@ export class AxisBuilder extends AbstractComponentBuilder<Axis, AxisComponent> {
     this.component.name = name;
   }
 
-  public setFacetName(name = ""): void {
-    this.component.facetName = name;
+  public setFacetName(identifier = ""): void {
+    this.component.identifier = identifier;
   }
 
   public setMin(min?: Minmax): void {
@@ -91,13 +100,14 @@ export class AxisBuilder extends AbstractComponentBuilder<Axis, AxisComponent> {
       nameGap,
       show,
       name,
-      facetName,
+      identifier,
       gridIndex,
       count,
+      custom,
     } = this.config;
 
     this.setName(name);
-    this.setFacetName(facetName);
+    this.setFacetName(identifier);
     this.setData(data);
     this.setMin(min);
     this.setMax(max);
@@ -107,6 +117,7 @@ export class AxisBuilder extends AbstractComponentBuilder<Axis, AxisComponent> {
     this.setNameGap(axisDimension, nameGap, max);
     this.setShow(show);
     this.setPosition(axisDimension);
+    this.setCustom(custom);
 
     return this.component;
   }

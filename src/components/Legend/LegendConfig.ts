@@ -5,4 +5,5 @@ export interface LegendConfig {
   visible: boolean;
   show: boolean;
   data: string[];
+  custom?: any;
 }

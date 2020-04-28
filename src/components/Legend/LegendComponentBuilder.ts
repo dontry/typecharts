@@ -54,8 +54,10 @@ export class LegendBuilder extends AbstractComponentBuilder<
   }
 
   public build(): LegendComponent {
+    const { custom } = this.config;
     const data = this.getDataFromSeriesGroup(this.seriesGroup);
     this.setData(data);
+    this.setCustom(custom);
     return this.component;
   }
 }

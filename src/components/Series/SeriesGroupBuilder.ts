@@ -4,6 +4,8 @@ import { SeriesGroupConfig } from "./SeriesConfig";
 import { DatasetComponent } from "../Dataset/DatasetComponent";
 import { isNil, flatten, isArray } from "lodash";
 import { Color } from "@/types/Color";
+import { PlotIdentifier } from "../Dataset/PlotIdentifier";
+import { DataParamType, DataParam } from "@/types/Param";
 
 export abstract class SeriesGroupBuilder<
   S extends Series = Series,
@@ -29,20 +31,23 @@ export abstract class SeriesGroupBuilder<
       : colors.find((color) => color.name === seriesName);
   }
 
-  protected getSeriesName(
-    valueName: string,
+  protected getSeriesIdentifier(
+    valueParam: DataParam,
     facetName?: string,
     categoryName?: string,
     subgroupName?: string,
   ): string {
-    let seriesName;
-    if (isNil(categoryName) && isNil(facetName)) {
-      seriesName = subgroupName ? subgroupName : valueName;
+    const plotIdentifier = new PlotIdentifier(
+      valueParam.type,
+      facetName,
+      categoryName,
+      subgroupName,
+    ).toString();
+    if (plotIdentifier === "") {
+      return valueParam.name;
     } else {
-      seriesName = categoryName ? categoryName : facetName;
+      return plotIdentifier;
     }
-
-    return seriesName || valueName;
   }
 
   public build(): K[] {

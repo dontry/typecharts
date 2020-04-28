@@ -54,13 +54,13 @@ describe("DateTimeDataSource", () => {
       type: "date",
       name: "Order Date",
       aggregation: FREQUENCY.YEAR,
+      format: "DD/MM/YY",
     };
 
     const dataSource = new DateTimeDataSource(
       parsedData,
       valueParams,
       dimensionParam,
-      "DD/MM/YY",
     );
     const dataArray = dataSource.transformToDataArray();
 

@@ -55,15 +55,14 @@ export class DataItemWithDateTime {
 
   private dateTime: Moment;
   private frequency: FREQUENCY;
+  private format?: string;
 
-  constructor(
-    private dataItem: DataItem,
-    private dimensionParam: DataParam,
-    private format?: string,
-  ) {
+  constructor(private dataItem: DataItem, private dimensionParam: DataParam) {
     this.frequency = this.dimensionParam.aggregation as FREQUENCY;
+    this.format = dimensionParam.format;
 
     const dateTimeString = dataItem[this.dimensionParam.name];
+
     if (typeof dateTimeString === "string") {
       if (this.format) {
         this.dateTime = moment(dateTimeString, this.format);
@@ -91,12 +90,16 @@ export class DataItemWithDateTime {
   }
 
   public getFormattedDate(): string {
-    const format = DataItemWithDateTime.FREQUENCY_META[this.frequency].format;
+    const format = this.frequency
+      ? DataItemWithDateTime.FREQUENCY_META[this.frequency].format
+      : this.format;
     return this.dateTime.format(format);
   }
 
   public getFormattedTimestamp(): number {
-    const format = DataItemWithDateTime.FREQUENCY_META[this.frequency].format;
+    const format = this.frequency
+      ? DataItemWithDateTime.FREQUENCY_META[this.frequency].format
+      : this.format;
     return moment(this.getFormattedDate(), format).unix();
   }
 

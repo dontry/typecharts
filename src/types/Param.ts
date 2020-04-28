@@ -6,4 +6,5 @@ export interface DataParam {
   type: DataParamType;
   aggregation?: FREQUENCY | NUMBER_AGGREGATION;
   value?: string | number;
+  format?: string;
 }

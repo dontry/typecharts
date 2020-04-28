@@ -29,9 +29,10 @@ export class TitleBuilder extends AbstractComponentBuilder<
     if (isNil(this.config)) {
       return this.component;
     }
-    const { text, show } = this.config;
+    const { text, show, custom } = this.config;
     this.setText(text);
     this.setShow(show);
+    this.setCustom(custom);
     return this.component;
   }
 }

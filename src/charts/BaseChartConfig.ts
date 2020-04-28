@@ -23,4 +23,5 @@ export interface BaseChartConfig {
   subtitle?: TitleConfig;
   color?: ColorConfig;
   legend?: LegendConfig;
+  custom?: any;
 }

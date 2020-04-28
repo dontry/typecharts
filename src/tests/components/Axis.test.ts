@@ -157,7 +157,7 @@ describe("Axis", () => {
       const xBuilder = new AxisGroupBuilder(plotDatasets, xConfig);
       const xAxisGroupComponent = xBuilder.build();
 
-      expect(xAxisGroupComponent.length).toBe(12);
+      expect(xAxisGroupComponent.length).toBe(4);
       if (xAxisGroupComponent[0]) {
         expect(xAxisGroupComponent[0].count).toBe(12);
         expect(xAxisGroupComponent[0].nameGap).toBe(27);
@@ -197,7 +197,7 @@ describe("Axis", () => {
       const yBuilder = new AxisGroupBuilder(plotDatasets, yConfig);
       const yAxisGroupComponent = yBuilder.build();
 
-      expect(yAxisGroupComponent.length).toBe(12);
+      expect(yAxisGroupComponent.length).toBe(4);
       if (yAxisGroupComponent[0]) {
         expect(yAxisGroupComponent[0].count).toBe(12);
         expect(yAxisGroupComponent[0].nameGap).toBe(27);

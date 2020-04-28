@@ -30,12 +30,18 @@ export class CartesianSeriesGroupBuilder extends SeriesGroupBuilder<
     index: number,
     config: CartesianSeriesGroupConfig,
   ): SeriesComponent<Series> | SeriesComponent<Series>[] {
-    const { valueParams, axisGroup, dimensionParam, type, colors } = config;
+    const {
+      valueParams,
+      axisGroup,
+      dimensionParam,
+      type,
+      colors,
+      custom,
+    } = config;
     const plotSeries = valueParams.map((valueParam: DataParam) => {
       const { facetName, subgroupName, categoryName } = plotDataset.getInfo();
-      // extract series
-      const seriesName = this.getSeriesName(
-        valueParam.name,
+      const seriesIdentifier = this.getSeriesIdentifier(
+        valueParam,
         facetName,
         subgroupName,
         categoryName,
@@ -43,20 +49,21 @@ export class CartesianSeriesGroupBuilder extends SeriesGroupBuilder<
       // TODO: flipped attribute, markline attribute
       const axisIdentifier = facetName === "" ? dimensionParam.name : facetName;
       const axisIndex = axisGroup
-        ? axisGroup.findIndex((axis) => axis.facetName === axisIdentifier)
+        ? axisGroup.findIndex((axis) => axis.identifier === axisIdentifier)
         : -1;
       const x = dimensionParam.name;
       const y = valueParam.name;
-      const matchedColor = this.getMatchedColor(seriesName, colors);
+      const matchedColor = this.getMatchedColor(seriesIdentifier, colors);
 
       const config: SeriesComponentConfig = {
         type: type,
-        name: seriesName,
+        name: seriesIdentifier,
         info: plotDataset.getInfo(),
         encode: { x, y },
         color: matchedColor?.value,
         axisIndex: axisIndex,
         datasetIndex: index,
+        custom: custom,
       };
 
       const seriesComponent = new CartesianSeriesBuilder(config).build();
