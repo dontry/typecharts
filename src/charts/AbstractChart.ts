@@ -84,14 +84,14 @@ export abstract class AbstractChart<
         }
         if (isArray(component)) {
           const components = component;
-          const optionName = components[0].getFieldName();
+          const optionName = components[0].getOptionName();
           field = {
             [optionName]: components.map(
               (com: AbstractComponent<ChartOption>) => com.toEChartOption(),
             ),
           };
         } else {
-          const optionName = component.getFieldName();
+          const optionName = component.getOptionName();
           field = { [optionName]: component.toEChartOption() };
         }
         return {

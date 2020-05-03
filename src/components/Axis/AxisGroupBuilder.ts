@@ -42,6 +42,18 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
   Axis,
   AxisComponent
 > {
+  public static createNiceScale(
+    datasets: DatasetComponent[],
+    dataParams: DataParam[],
+    onZero: boolean,
+  ): NiceScale {
+    const [min, max] = DatasetComponent.getMinmaxOfDatasets(
+      datasets,
+      dataParams,
+    );
+    return new NiceScale(min, max, onZero);
+  }
+
   constructor(
     protected datasets: DatasetComponent[],
     protected config: AxisGroupConfig,
@@ -161,10 +173,9 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
         uniformMinmax,
       )
     ) {
-      overallNiceScale = this.createOverallNiceScale(
+      overallNiceScale = AxisGroupBuilder.createNiceScale(
         this.datasets,
         dataParams,
-        axisType,
         onZero,
       );
     }
@@ -272,18 +283,5 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
     uniformMinmax = true,
   ): boolean {
     return (uniformMinmax || facetCount === 0) && axisType === "value";
-  }
-
-  protected createOverallNiceScale(
-    datasets: DatasetComponent[],
-    dataParams: DataParam[],
-    axisType: AxisType,
-    onZero: boolean,
-  ): NiceScale {
-    const [min, max] = DatasetComponent.getMinmaxOfDatasets(
-      this.datasets,
-      dataParams,
-    );
-    return new NiceScale(min, max, onZero);
   }
 }

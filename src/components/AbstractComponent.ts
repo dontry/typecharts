@@ -21,7 +21,7 @@ export abstract class AbstractComponent<T> implements BaseOption<T> {
   public set custom(value: any) {
     this._custom = value;
   }
-  public getFieldName(): string {
+  public getOptionName(): string {
     return this.optionName;
   }
   public abstract toEChartOption(): T;
