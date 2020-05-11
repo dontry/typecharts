@@ -11,12 +11,14 @@ import { AxisComponent } from "@/components/Axis/AxisComponent";
 import { SeriesType } from "@/components/Series/SeriesComponent";
 import { CartesianSeriesGroupConfig } from "@/components/Series/SeriesConfig";
 import { CartesianSeriesGroupBuilder } from "@/components/Series/CartesianSeriesGroupBuilder";
+import { TitleGroupBuilder } from "@/components/Title/TitleGroupBuilder";
 
 export abstract class AbstractCartesianChart<
   T extends BaseCartesianChartConfig = BaseCartesianChartConfig
 > extends AbstractChart {
   protected xAxisGroupBuilder!: AxisGroupBuilder;
   protected yAxisGroupBuilder!: AxisGroupBuilder;
+  protected titleGroupBuilder!: TitleGroupBuilder;
 
   constructor(protected data: DataItem[], protected config: T) {
     super(data, config);
@@ -24,6 +26,7 @@ export abstract class AbstractCartesianChart<
 
   public constructComponentBuilders(): void {
     super.constructComponentBuilders();
+    this.titleGroupBuilder = this.constructTitleGroupBuilder(this.config);
     const pageSize = this.gridBuilder.getCols() * this.gridBuilder.getRows();
     const pageIndex = this.config.pageIndex;
     const paginateDatasets = DatasetBuilder.getPaginateDatasets(
@@ -43,11 +46,15 @@ export abstract class AbstractCartesianChart<
     );
     const xAxisGroup = this.xAxisGroupBuilder.build();
     this.seriesGroupBuilder = this.constructSeriesGroupBuilder(
-      paginateDatasets,
       this.seriesType,
       this.config,
       xAxisGroup,
+      paginateDatasets,
     );
+  }
+  public constructTitleGroupBuilder(config: T): TitleGroupBuilder {
+    const titleGroupConfig = config.title;
+    return new TitleGroupBuilder(titleGroupConfig);
   }
 
   public constructXAxisGroupBuilder(
@@ -83,10 +90,10 @@ export abstract class AbstractCartesianChart<
   }
 
   public constructSeriesGroupBuilder(
-    datasets: DatasetComponent[],
     seriesType: SeriesType,
     config: T,
     axisGroup: AxisComponent[] = [],
+    datasets?: DatasetComponent[],
   ): CartesianSeriesGroupBuilder {
     const seriesGroupConfig: CartesianSeriesGroupConfig = {
       axisGroup: axisGroup,
@@ -96,6 +103,6 @@ export abstract class AbstractCartesianChart<
       custom: config.custom?.series,
     };
 
-    return new CartesianSeriesGroupBuilder(datasets, seriesGroupConfig);
+    return new CartesianSeriesGroupBuilder(seriesGroupConfig);
   }
 }

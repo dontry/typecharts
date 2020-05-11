@@ -86,7 +86,6 @@ export class BarChart extends AbstractCartesianChart<BarChartConfig> {
     const xAxisGroupComponent = this.xAxisGroupBuilder.build();
     const yAxisGroupComponent = this.yAxisGroupBuilder.build();
     const gridComponent = this.gridBuilder.build();
-    const seriesGroupComponent = this.seriesGroupBuilder.build();
     const pageSize = this.gridBuilder.getCols() * this.gridBuilder.getRows();
     const pageIndex = this.config.pageIndex;
     const paginateDatasets = DatasetBuilder.getPaginateDatasets(
@@ -95,12 +94,21 @@ export class BarChart extends AbstractCartesianChart<BarChartConfig> {
       pageIndex,
     );
 
+    const seriesGroupComponent = this.seriesGroupBuilder.build(
+      paginateDatasets,
+    );
+    const titleGroupComponent = this.titleGroupBuilder.build(
+      seriesGroupComponent,
+      gridComponent,
+    );
+
     const pipeline = [
       paginateDatasets,
       xAxisGroupComponent,
       yAxisGroupComponent,
       gridComponent,
       seriesGroupComponent,
+      titleGroupComponent,
     ];
 
     return this.generateEChartOptionWithPipeline(pipeline);

@@ -22,11 +22,8 @@ export class PieSeriesGroupBuilder extends SeriesGroupBuilder<
   PieSeriesComponent,
   PieSeriesGroupConfig
 > {
-  constructor(
-    protected datasets: DatasetComponent[],
-    protected config: PieSeriesGroupConfig,
-  ) {
-    super(datasets, config);
+  constructor(protected config: PieSeriesGroupConfig) {
+    super(config);
     this.initializeComponent();
   }
 
@@ -46,7 +43,7 @@ export class PieSeriesGroupBuilder extends SeriesGroupBuilder<
     );
     const { facetName, subgroupName, categoryName } = plotDataset.getInfo();
     const seriesName = this.getSeriesIdentifier(
-      valueParams[0].type,
+      valueParams[0],
       facetName,
       categoryName,
       subgroupName,

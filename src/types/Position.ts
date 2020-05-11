@@ -1,2 +1,2 @@
-export type Position = number | PosString;
+export type Position = number | string | PosString;
 export type PosString = "top" | "middle" | "bottom" | "auto";

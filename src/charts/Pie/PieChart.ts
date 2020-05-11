@@ -11,10 +11,10 @@ import {
   PieSeriesGroupBuilder,
   PieSeriesGroupConfig,
 } from "./components/PieSeriesGroupBuilder";
-import { DatasetComponent } from "@/components/Dataset/DatasetComponent";
 import { SeriesGroupBuilder } from "@/components/Series/SeriesGroupBuilder";
 import { LayoutConfig } from "@/components/Layout/LayoutConfig";
 import { DataParam } from "@/types/Param";
+import { PieTitleGroupBuilder } from "./components/PieTitleGroupBuilder";
 
 export type PieType = "round" | "radar" | "ring";
 
@@ -28,17 +28,12 @@ export interface PieChartConfig
 
 export class PieChart extends AbstractChart<PieChartConfig> {
   protected seriesType: SeriesType = "pie";
+  protected titleGroupBuilder!: PieTitleGroupBuilder;
 
   constructor(protected data: DataItem[], protected config: PieChartConfig) {
     super(data, config);
     super.constructComponentBuilders();
-    const pageSize = this.gridBuilder.getCols() * this.gridBuilder.getRows();
-    const pageIndex = this.config.pageIndex;
-    const paginateDatasets = DatasetBuilder.getPaginateDatasets(
-      this.plotDatasets,
-      pageSize,
-      pageIndex,
-    );
+
     config = {
       ...config,
       // update layout
@@ -48,10 +43,10 @@ export class PieChart extends AbstractChart<PieChartConfig> {
       },
     };
     this.seriesGroupBuilder = this.constructSeriesGroupBuilder(
-      paginateDatasets,
       this.seriesType,
       config,
     );
+    this.titleGroupBuilder = this.constructTitleGroupBuilder(this.config);
   }
 
   public constructDatasetBuilder(
@@ -68,7 +63,6 @@ export class PieChart extends AbstractChart<PieChartConfig> {
   }
 
   public constructSeriesGroupBuilder(
-    datasets: DatasetComponent[],
     seriesType: SeriesType,
     config: PieChartConfig,
   ): SeriesGroupBuilder {
@@ -79,7 +73,14 @@ export class PieChart extends AbstractChart<PieChartConfig> {
       layout: config.layout,
     };
 
-    return new PieSeriesGroupBuilder(datasets, seriesGroupConfig);
+    return new PieSeriesGroupBuilder(seriesGroupConfig);
+  }
+
+  public constructTitleGroupBuilder(
+    config: PieChartConfig,
+  ): PieTitleGroupBuilder {
+    const titleGroupConfig = config.title;
+    return new PieTitleGroupBuilder(titleGroupConfig);
   }
 
   public compareConfig(newConfig: BaseChartConfig): void {
@@ -87,9 +88,22 @@ export class PieChart extends AbstractChart<PieChartConfig> {
   }
   public buildEChartOption(): EChartOption {
     const gridComponent = this.gridBuilder.build();
-    const seriesGroupComponent = this.seriesGroupBuilder.build();
+    const pageSize = this.gridBuilder.getCols() * this.gridBuilder.getRows();
+    const pageIndex = this.config.pageIndex;
+    const paginateDatasets = DatasetBuilder.getPaginateDatasets(
+      this.plotDatasets,
+      pageSize,
+      pageIndex,
+    );
+    const seriesGroupComponent = this.seriesGroupBuilder.build(
+      paginateDatasets,
+    );
+    const titleGroupComponent = this.titleGroupBuilder.build(
+      seriesGroupComponent,
+      this.config.layout,
+    );
 
-    const pipeline = [gridComponent, seriesGroupComponent];
+    const pipeline = [gridComponent, seriesGroupComponent, titleGroupComponent];
 
     return this.generateEChartOptionWithPipeline(pipeline);
   }

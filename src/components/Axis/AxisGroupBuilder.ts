@@ -61,8 +61,8 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
     super(config);
   }
 
-  public initializeComponent(axis: AxisDimension): AxisComponent {
-    return new AxisComponent(axis);
+  public initializeComponent(): void {
+    return;
   }
 
   private getFacetNamesFromDatasets(datasets: DatasetComponent[]): string[] {

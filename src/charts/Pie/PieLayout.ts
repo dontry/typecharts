@@ -4,6 +4,14 @@ export const PieLayout = {
       center: ["50%", "50%"],
       radius: "80%",
       ring: ["30%", "60%"],
+      title: {
+        left: "50%",
+        top: "3%",
+        textAlign: "center",
+        textStyle: {
+          fontSize: 14,
+        },
+      },
     },
   ],
   "1,2": [
@@ -147,7 +155,7 @@ export const PieLayout = {
       radius: "20%",
       ring: ["8%", "20%"],
       title: {
-        left: "20%",
+        left: "50%",
         top: "33%",
         fontSize: 12,
         textAlign: "center",
@@ -161,7 +169,7 @@ export const PieLayout = {
       radius: "20%",
       ring: ["8%", "20%"],
       title: {
-        left: "20%",
+        left: "80%",
         top: "33%",
         fontSize: 12,
         textAlign: "center",
@@ -177,7 +185,7 @@ export const PieLayout = {
       radius: "20%",
       ring: ["8%", "20%"],
       title: {
-        left: "33%",
+        left: "80%",
         top: "20%",
         fontSize: 12,
         textAlign: "right",

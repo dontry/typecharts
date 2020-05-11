@@ -2,17 +2,17 @@ import { AbstractComponentBuilder } from "../AbstractComponentBuilder";
 import { SeriesComponent, Series } from "./SeriesComponent";
 import { SeriesGroupConfig } from "./SeriesConfig";
 import { DatasetComponent } from "../Dataset/DatasetComponent";
-import { isNil, flatten, isArray } from "lodash";
+import { flatten, isArray } from "lodash";
 import { Color } from "@/types/Color";
 import { PlotIdentifier } from "../Dataset/PlotIdentifier";
-import { DataParamType, DataParam } from "@/types/Param";
+import { DataParam } from "@/types/Param";
 
 export abstract class SeriesGroupBuilder<
   S extends Series = Series,
   K extends SeriesComponent<S> = SeriesComponent<S>,
   T extends SeriesGroupConfig = SeriesGroupConfig
 > extends AbstractComponentBuilder<S, K> {
-  constructor(protected datasets: DatasetComponent[], protected config: T) {
+  constructor(protected config: T) {
     super(config);
   }
 
@@ -50,8 +50,8 @@ export abstract class SeriesGroupBuilder<
     }
   }
 
-  public build(): K[] {
-    const series = this.datasets.map(
+  public build(datasets: DatasetComponent[]): K[] {
+    const series = datasets.map(
       (plotDataset: DatasetComponent, index: number) =>
         this.getPlotSeriesFromPlotDataset(plotDataset, index, this.config),
     );

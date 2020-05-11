@@ -1,3 +1,3 @@
-export interface BaseOption<T> {
+export interface EChartOptionInterface<T> {
   toEChartOption(): T;
 }

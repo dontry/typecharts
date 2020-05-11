@@ -77,6 +77,10 @@ describe("Pie Chart", () => {
         cols: 3,
       },
       toggleLabel: true,
+      title: {
+        show: true,
+        textAlign: "center",
+      },
     };
 
     const chart = new PieChart(rawData, config);

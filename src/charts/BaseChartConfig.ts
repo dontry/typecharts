@@ -20,7 +20,7 @@ export interface BaseChartConfig {
   orderBy?: string;
   layout?: LayoutConfig;
   pageIndex?: number;
-  subtitle?: TitleConfig;
+  title?: TitleConfig;
   color?: ColorConfig;
   legend?: LegendConfig;
   custom?: any;

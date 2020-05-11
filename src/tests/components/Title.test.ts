@@ -1,29 +1,46 @@
 import { TitleConfig } from "@/components/Title/TitleConfig";
-import { TitleBuilder } from "@/components/Title/TitleBuilder";
+import {
+  TitleBuilder,
+  TitleBuilderConfig,
+} from "@/components/Title/TitleBuilder";
 
 describe("Test Builder", () => {
   it("should build a blank title component", () => {
-    const builder = new TitleBuilder();
-    builder.build();
-    const component = builder.getComponent();
-    expect(component.show).toBe(true);
-    expect(component.text).toBe("");
-  });
-  it("should build a title component", () => {
-    const config: TitleConfig = {
-      text: "aaa",
+    const config: TitleBuilderConfig = {
       show: true,
+      text: "aaa",
     };
-
     const builder = new TitleBuilder(config);
     builder.build();
     const component = builder.getComponent();
     expect(component.show).toBe(true);
     expect(component.text).toBe("aaa");
   });
+  it("should build a title component", () => {
+    const config: TitleBuilderConfig = {
+      show: true,
+      text: "aaa",
+      textAlign: "left",
+      left: "10%",
+      top: "50%",
+    };
+
+    const builder = new TitleBuilder(config);
+    builder.build();
+    const component = builder.getComponent();
+    const option = component.toEChartOption();
+
+    expect(option).toEqual({
+      show: true,
+      text: "aaa",
+      textAlign: "left",
+      left: "10%",
+      top: "50%",
+    });
+  });
 
   it("should update component's properties", () => {
-    const config: TitleConfig = {
+    const config: TitleBuilderConfig = {
       text: "aaa",
       show: true,
     };
@@ -41,7 +58,7 @@ describe("Test Builder", () => {
 
 describe("Title component", () => {
   it("should return echart option", () => {
-    const config: TitleConfig = {
+    const config: TitleBuilderConfig = {
       text: "aaa",
       show: true,
     };
@@ -51,6 +68,12 @@ describe("Title component", () => {
     const component = builder.getComponent();
     const option = component.toEChartOption();
 
-    expect(option).toStrictEqual({ text: "aaa", show: true });
+    expect(option).toStrictEqual({
+      text: "aaa",
+      show: true,
+      textAlign: "center",
+      top: 0,
+      left: 0,
+    });
   });
 });

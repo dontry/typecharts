@@ -33,10 +33,10 @@ export class LineChart extends AbstractCartesianChart<LineChartConfig> {
   }
 
   public constructSeriesGroupBuilder(
-    datasets: DatasetComponent[],
     seriesType: SeriesType,
     config: LineChartConfig,
     axisGroup: AxisComponent[] = [],
+    datasets: DatasetComponent[],
   ): CartesianSeriesGroupBuilder {
     const seriesGroupConfig: CartesianSeriesGroupConfig = {
       axisGroup: axisGroup,
@@ -54,20 +54,27 @@ export class LineChart extends AbstractCartesianChart<LineChartConfig> {
       sampling,
       areaStyle,
     };
-    return new CartesianSeriesGroupBuilder(datasets, seriesGroupConfig);
+    return new CartesianSeriesGroupBuilder(seriesGroupConfig);
   }
 
   public buildEChartOption(): EChartOption {
     const xAxisGroupComponent = this.xAxisGroupBuilder.build();
     const yAxisGroupComponent = this.yAxisGroupBuilder.build();
     const gridComponent = this.gridBuilder.build();
-    const seriesGroupComponent = this.seriesGroupBuilder.build();
     const pageSize = this.gridBuilder.getCols() * this.gridBuilder.getRows();
     const pageIndex = this.config.pageIndex;
     const paginateDatasets = DatasetBuilder.getPaginateDatasets(
       this.plotDatasets,
       pageSize,
       pageIndex,
+    );
+
+    const seriesGroupComponent = this.seriesGroupBuilder.build(
+      paginateDatasets,
+    );
+    const titleGroupComponent = this.titleGroupBuilder.build(
+      seriesGroupComponent,
+      gridComponent,
     );
     // const datasetGroupComponent = new DatasetGroupComponent(paginateDatasets);
 
@@ -76,6 +83,7 @@ export class LineChart extends AbstractCartesianChart<LineChartConfig> {
       xAxisGroupComponent,
       yAxisGroupComponent,
       gridComponent,
+      titleGroupComponent,
       seriesGroupComponent,
     ];
 

@@ -31,7 +31,7 @@ export abstract class AbstractVisualMapComponent<T> extends AbstractComponent<
 
   constructor() {
     super();
-    this.optionName = "visualMap";
+    this.fieldName = "visualMap";
   }
 
   public get min(): number {

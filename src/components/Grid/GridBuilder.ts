@@ -40,7 +40,7 @@ export class GridBuilder extends AbstractComponentBuilder<
     this.component.config = componentConfig;
   }
 
-  public build(): GridComponent | null {
+  public build(): GridComponent {
     return this.component;
   }
 

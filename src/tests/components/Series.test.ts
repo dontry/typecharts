@@ -61,9 +61,8 @@ describe("SeriesGroupBuilder", () => {
       };
 
       const seriesComponents = new CartesianSeriesGroupBuilder(
-        plotDatasets,
         seriesGroupConfig,
-      ).build();
+      ).build(plotDatasets);
 
       expect(seriesComponents.length).toBe(11);
       expect(seriesComponents[0].type).toEqual("line");
@@ -131,9 +130,8 @@ describe("SeriesGroupBuilder", () => {
       };
 
       const seriesComponents = new CartesianSeriesGroupBuilder(
-        plotDatasets,
         seriesGroupConfig,
-      ).build();
+      ).build(plotDatasets);
 
       expect(seriesComponents.length).toBe(8);
       expect(seriesComponents[0].type).toEqual("line");

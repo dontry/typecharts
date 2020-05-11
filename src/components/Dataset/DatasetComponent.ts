@@ -20,7 +20,7 @@ export class DatasetComponent extends AbstractComponent<Dataset> {
     private info: PlotDatasetInfo,
   ) {
     super();
-    this.optionName = "dataset";
+    this.fieldName = "dataset";
   }
 
   public getEChartOptionDataset(): EChartOption.Dataset {

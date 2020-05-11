@@ -49,7 +49,7 @@ export class SeriesComponent<
 
   constructor() {
     super();
-    this.optionName = "series";
+    this.fieldName = "series";
   }
 
   public get type(): SeriesType {

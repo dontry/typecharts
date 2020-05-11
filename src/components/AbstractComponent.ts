@@ -1,4 +1,4 @@
-import { BaseOption } from "./BaseOption";
+import { EChartOptionInterface } from "./BaseOption";
 import { v4 as uuid } from "uuid";
 import { Series } from "./Series/SeriesComponent";
 import { Dataset } from "./Dataset/DatasetComponent";
@@ -7,9 +7,9 @@ import { Grid } from "./Grid/GridComponent";
 
 export type ChartOption = Series | Dataset | Axis | Grid[];
 
-export abstract class AbstractComponent<T> implements BaseOption<T> {
+export abstract class AbstractComponent<T> implements EChartOptionInterface<T> {
   protected id: string;
-  protected optionName!: string;
+  protected fieldName!: string;
   protected _custom: any = {};
 
   constructor() {
@@ -21,8 +21,8 @@ export abstract class AbstractComponent<T> implements BaseOption<T> {
   public set custom(value: any) {
     this._custom = value;
   }
-  public getOptionName(): string {
-    return this.optionName;
+  public getFieldName(): string {
+    return this.fieldName;
   }
   public abstract toEChartOption(): T;
 }

@@ -39,7 +39,7 @@ export class AxisComponent extends AbstractComponent<Axis> {
 
   constructor(axis: AxisDimension) {
     super();
-    this.optionName = `${axis}Axis`;
+    this.fieldName = `${axis}Axis`;
     this.nameGap = AxisComponent.DEFAULT_NAME_GAP;
   }
 

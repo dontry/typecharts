@@ -11,7 +11,7 @@ export abstract class AbstractComponentBuilder<
     this.component.custom = custom;
   }
   protected abstract initializeComponent(args?: any): void;
-  public abstract build(): K | null | (K | null)[];
+  public abstract build(...args: any[]): K | null | (K | null)[];
   public getComponent(): K {
     return this.component;
   }

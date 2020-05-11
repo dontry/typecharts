@@ -75,13 +75,19 @@ export class ScatterChart extends AbstractCartesianChart {
     const xAxisGroupComponent = this.xAxisGroupBuilder.build();
     const yAxisGroupComponent = this.yAxisGroupBuilder.build();
     const gridComponent = this.gridBuilder.build();
-    const seriesGroupComponent = this.seriesGroupBuilder.build();
     const pageSize = this.gridBuilder.getCols() * this.gridBuilder.getRows();
     const pageIndex = this.config.pageIndex;
     const paginateDatasets = DatasetBuilder.getPaginateDatasets(
       this.plotDatasets,
       pageSize,
       pageIndex,
+    );
+    const seriesGroupComponent = this.seriesGroupBuilder.build(
+      paginateDatasets,
+    );
+    const titleGroupComponent = this.titleGroupBuilder.build(
+      seriesGroupComponent,
+      gridComponent,
     );
     const visualMapComponent = this.visualMapBuilder?.build();
 
@@ -91,6 +97,7 @@ export class ScatterChart extends AbstractCartesianChart {
       yAxisGroupComponent,
       gridComponent,
       seriesGroupComponent,
+      titleGroupComponent,
       visualMapComponent,
     ]);
 

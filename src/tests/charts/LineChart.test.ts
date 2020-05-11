@@ -241,6 +241,9 @@ describe("Line Chart", () => {
         },
         isSolid: true,
         sampling: "average",
+        title: {
+          show: true,
+        },
       };
       const chart = new LineChart(rawData, config);
       const option = chart.buildEChartOption();

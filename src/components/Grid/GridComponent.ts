@@ -41,7 +41,7 @@ export class GridComponent extends AbstractComponent<Grid[]> {
 
   constructor(config: GridConfig = { rows: 1, cols: 1 }) {
     super();
-    this.optionName = "grid";
+    this.fieldName = "grid";
     this._config = config;
   }
 

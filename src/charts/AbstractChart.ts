@@ -57,10 +57,10 @@ export abstract class AbstractChart<
   }
 
   public abstract constructSeriesGroupBuilder(
-    datasets: DatasetComponent[],
     seriesType: SeriesType,
     config: T,
     axisGroup: AxisComponent[],
+    datasets?: DatasetComponent[],
   ): SeriesGroupBuilder;
 
   protected generateEChartOptionWithPipeline(
@@ -83,16 +83,18 @@ export abstract class AbstractChart<
           return option;
         }
         if (isArray(component)) {
-          const components = component;
-          const optionName = components[0].getOptionName();
-          field = {
-            [optionName]: components.map(
-              (com: AbstractComponent<ChartOption>) => com.toEChartOption(),
-            ),
-          };
+          if (component.length > 0) {
+            const components = component;
+            const fieldName = components[0].getFieldName();
+            field = {
+              [fieldName]: components.map(
+                (com: AbstractComponent<ChartOption>) => com.toEChartOption(),
+              ),
+            };
+          }
         } else {
-          const optionName = component.getOptionName();
-          field = { [optionName]: component.toEChartOption() };
+          const fieldName = component.getFieldName();
+          field = { [fieldName]: component.toEChartOption() };
         }
         return {
           ...option,

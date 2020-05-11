@@ -102,3 +102,11 @@ export function deepMerge(rst: any, ...args: any[]): any {
   }
   return rst;
 }
+
+export function calculatePercentageOfString(
+  percentageOperation: string,
+): string {
+  const operation = percentageOperation.replace(/[\s%]/g, "");
+  const result = eval(operation);
+  return Number.isNaN(result) ? "50%" : result + "%";
+}

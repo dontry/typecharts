@@ -14,11 +14,8 @@ export class CartesianSeriesGroupBuilder extends SeriesGroupBuilder<
   SeriesComponent<Series>,
   CartesianSeriesGroupConfig
 > {
-  constructor(
-    protected datasets: DatasetComponent[],
-    protected config: CartesianSeriesGroupConfig,
-  ) {
-    super(datasets, config);
+  constructor(protected config: CartesianSeriesGroupConfig) {
+    super(config);
   }
 
   protected initializeComponent(): void {
