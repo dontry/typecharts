@@ -1,4 +1,4 @@
-import { EChartOptionInterface } from "./BaseOption";
+import { EChartOptionInterface } from "./EChartOptionInterface";
 import { v4 as uuid } from "uuid";
 import { Series } from "./Series/SeriesComponent";
 import { Dataset } from "./Dataset/DatasetComponent";

@@ -48,10 +48,9 @@ describe("SeriesGroupBuilder", () => {
         onZero: true,
       };
 
-      const xAxisComponents = new AxisGroupBuilder(
+      const xAxisComponents = new AxisGroupBuilder(xAxisGroupConfig).build(
         plotDatasets,
-        xAxisGroupConfig,
-      ).build();
+      );
 
       const seriesGroupConfig: CartesianSeriesGroupConfig = {
         axisGroup: xAxisComponents,
@@ -117,10 +116,9 @@ describe("SeriesGroupBuilder", () => {
         onZero: true,
       };
 
-      const xAxisComponents = new AxisGroupBuilder(
+      const xAxisComponents = new AxisGroupBuilder(xAxisGroupConfig).build(
         plotDatasets,
-        xAxisGroupConfig,
-      ).build();
+      );
 
       const seriesGroupConfig: CartesianSeriesGroupConfig = {
         axisGroup: xAxisComponents,

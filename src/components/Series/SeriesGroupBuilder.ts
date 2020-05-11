@@ -2,10 +2,11 @@ import { AbstractComponentBuilder } from "../AbstractComponentBuilder";
 import { SeriesComponent, Series } from "./SeriesComponent";
 import { SeriesGroupConfig } from "./SeriesConfig";
 import { DatasetComponent } from "../Dataset/DatasetComponent";
-import { flatten, isArray } from "lodash";
+import { flatten, isArray, isNil } from "lodash";
 import { Color } from "@/types/Color";
 import { PlotIdentifier } from "../Dataset/PlotIdentifier";
 import { DataParam } from "@/types/Param";
+import { AxisComponent } from "../Axis/AxisComponent";
 
 export abstract class SeriesGroupBuilder<
   S extends Series = Series,
@@ -50,10 +51,17 @@ export abstract class SeriesGroupBuilder<
     }
   }
 
-  public build(datasets: DatasetComponent[]): K[] {
+  public build(datasets: DatasetComponent[], axisGroup?: AxisComponent[]): K[] {
+    let config = this.config;
+    if (!isNil(axisGroup)) {
+      config = {
+        ...this.config,
+        axisGroup: axisGroup,
+      };
+    }
     const series = datasets.map(
       (plotDataset: DatasetComponent, index: number) =>
-        this.getPlotSeriesFromPlotDataset(plotDataset, index, this.config),
+        this.getPlotSeriesFromPlotDataset(plotDataset, index, config),
     );
     const components = isArray(series) ? flatten(series) : series;
     return components;

@@ -10,7 +10,9 @@ import { AxisComponent } from "@/components/Axis/AxisComponent";
 import { CartesianSeriesGroupBuilder } from "@/components/Series/CartesianSeriesGroupBuilder";
 import { CartesianSeriesGroupConfig } from "@/components/Series/SeriesConfig";
 import { Sampling } from "@/types/Sampling";
-import { mean } from "lodash";
+import { mean, compact } from "lodash";
+import { AbstractComponent } from "@/components/AbstractComponent";
+import { ChartComponent } from "../AbstractChart";
 
 export interface LineChartConfig extends BaseCartesianChartConfig {
   isStacked?: boolean;
@@ -26,20 +28,18 @@ export class LineChart extends AbstractCartesianChart<LineChartConfig> {
     super.constructComponentBuilders();
   }
 
-  public compareConfig(newConfig: LineChartConfig): void {
+  protected updateChartByConfig(newConfig: LineChartConfig): void {
     const diff = new EntityDiff(this.config, newConfig);
     // TODO: Update chart based on diff;
     this.config = newConfig;
   }
 
-  public constructSeriesGroupBuilder(
+  protected constructSeriesGroupBuilder(
     seriesType: SeriesType,
     config: LineChartConfig,
-    axisGroup: AxisComponent[] = [],
     datasets: DatasetComponent[],
   ): CartesianSeriesGroupBuilder {
     const seriesGroupConfig: CartesianSeriesGroupConfig = {
-      axisGroup: axisGroup,
       type: seriesType,
       valueParams: config.valueParams,
       dimensionParam: config.dimensionParam,
@@ -57,9 +57,7 @@ export class LineChart extends AbstractCartesianChart<LineChartConfig> {
     return new CartesianSeriesGroupBuilder(seriesGroupConfig);
   }
 
-  public buildEChartOption(): EChartOption {
-    const xAxisGroupComponent = this.xAxisGroupBuilder.build();
-    const yAxisGroupComponent = this.yAxisGroupBuilder.build();
+  protected getChartComponents(): ChartComponent[] {
     const gridComponent = this.gridBuilder.build();
     const pageSize = this.gridBuilder.getCols() * this.gridBuilder.getRows();
     const pageIndex = this.config.pageIndex;
@@ -68,29 +66,29 @@ export class LineChart extends AbstractCartesianChart<LineChartConfig> {
       pageSize,
       pageIndex,
     );
+    const xAxisGroupComponent = this.xAxisGroupBuilder.build(paginateDatasets);
+    const yAxisGroupComponent = this.yAxisGroupBuilder.build(paginateDatasets);
 
     const seriesGroupComponent = this.seriesGroupBuilder.build(
       paginateDatasets,
+      xAxisGroupComponent,
     );
     const titleGroupComponent = this.titleGroupBuilder.build(
       seriesGroupComponent,
       gridComponent,
     );
-    // const datasetGroupComponent = new DatasetGroupComponent(paginateDatasets);
 
-    const pipeline = [
+    return compact([
       paginateDatasets,
       xAxisGroupComponent,
       yAxisGroupComponent,
       gridComponent,
       titleGroupComponent,
       seriesGroupComponent,
-    ];
-
-    return this.generateEChartOptionWithPipeline(pipeline);
+    ]);
   }
 
-  private getSampling(
+  protected getSampling(
     datasets: DatasetComponent[],
     method?: Sampling,
   ): Sampling | undefined {

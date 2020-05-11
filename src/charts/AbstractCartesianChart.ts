@@ -1,17 +1,15 @@
-import { DatasetBuilder } from "@/components/Dataset/DatasetBuilder";
 import { DataItem } from "@/types/DataItem";
 import {
   AxisGroupBuilder,
   AxisGroupConfig,
 } from "@/components/Axis/AxisGroupBuilder";
-import { DatasetComponent } from "@/components/Dataset/DatasetComponent";
 import { AbstractChart } from "./AbstractChart";
 import { BaseCartesianChartConfig } from "./BaseCartesianChartConfig";
-import { AxisComponent } from "@/components/Axis/AxisComponent";
 import { SeriesType } from "@/components/Series/SeriesComponent";
 import { CartesianSeriesGroupConfig } from "@/components/Series/SeriesConfig";
 import { CartesianSeriesGroupBuilder } from "@/components/Series/CartesianSeriesGroupBuilder";
 import { TitleGroupBuilder } from "@/components/Title/TitleGroupBuilder";
+import { DatasetComponent } from "@/components/Dataset/DatasetComponent";
 
 export abstract class AbstractCartesianChart<
   T extends BaseCartesianChartConfig = BaseCartesianChartConfig
@@ -24,41 +22,30 @@ export abstract class AbstractCartesianChart<
     super(data, config);
   }
 
-  public constructComponentBuilders(): void {
+  protected constructComponentBuilders(): void {
     super.constructComponentBuilders();
-    this.titleGroupBuilder = this.constructTitleGroupBuilder(this.config);
-    const pageSize = this.gridBuilder.getCols() * this.gridBuilder.getRows();
-    const pageIndex = this.config.pageIndex;
-    const paginateDatasets = DatasetBuilder.getPaginateDatasets(
-      this.plotDatasets,
-      pageSize,
-      pageIndex,
-    );
     this.xAxisGroupBuilder = this.constructXAxisGroupBuilder(
-      paginateDatasets,
       this.config,
       this.gridBuilder.getCols(),
     );
     this.yAxisGroupBuilder = this.constructYAxisGroupBuilder(
-      paginateDatasets,
       this.config,
       this.gridBuilder.getRows(),
     );
-    const xAxisGroup = this.xAxisGroupBuilder.build();
+    this.titleGroupBuilder = this.constructTitleGroupBuilder(this.config);
     this.seriesGroupBuilder = this.constructSeriesGroupBuilder(
       this.seriesType,
       this.config,
-      xAxisGroup,
-      paginateDatasets,
+      this.plotDatasets,
     );
   }
-  public constructTitleGroupBuilder(config: T): TitleGroupBuilder {
+
+  protected constructTitleGroupBuilder(config: T): TitleGroupBuilder {
     const titleGroupConfig = config.title;
     return new TitleGroupBuilder(titleGroupConfig);
   }
 
-  public constructXAxisGroupBuilder(
-    datasets: DatasetComponent[],
+  protected constructXAxisGroupBuilder(
     config: T,
     count: number,
   ): AxisGroupBuilder {
@@ -69,12 +56,11 @@ export abstract class AbstractCartesianChart<
       count,
       ...config.xAxis,
     };
-    const xAxisGroupBuilder = new AxisGroupBuilder(datasets, axisGroupConfig);
+    const xAxisGroupBuilder = new AxisGroupBuilder(axisGroupConfig);
     return xAxisGroupBuilder;
   }
 
-  public constructYAxisGroupBuilder(
-    datasets: DatasetComponent[],
+  protected constructYAxisGroupBuilder(
     config: BaseCartesianChartConfig,
     count: number,
   ): AxisGroupBuilder {
@@ -85,18 +71,16 @@ export abstract class AbstractCartesianChart<
       count,
       ...config.yAxis,
     };
-    const yAxisGroupBuilder = new AxisGroupBuilder(datasets, axisGroupConfig);
+    const yAxisGroupBuilder = new AxisGroupBuilder(axisGroupConfig);
     return yAxisGroupBuilder;
   }
 
-  public constructSeriesGroupBuilder(
+  protected constructSeriesGroupBuilder(
     seriesType: SeriesType,
     config: T,
-    axisGroup: AxisComponent[] = [],
     datasets?: DatasetComponent[],
   ): CartesianSeriesGroupBuilder {
     const seriesGroupConfig: CartesianSeriesGroupConfig = {
-      axisGroup: axisGroup,
       type: seriesType,
       valueParams: config.valueParams,
       dimensionParam: config.dimensionParam,

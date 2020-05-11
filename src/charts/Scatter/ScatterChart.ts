@@ -9,6 +9,7 @@ import { DatasetComponent } from "@/components/Dataset/DatasetComponent";
 import { VisualMapComponentConfig } from "@/components/VisualMap/VisualMapComponent";
 import { compact, isNil } from "lodash";
 import { AxisGroupBuilder } from "@/components/Axis/AxisGroupBuilder";
+import { ChartComponent } from "../AbstractChart";
 
 export interface ScatterChartConfig extends BaseCartesianChartConfig {
   isBubble?: boolean;
@@ -27,13 +28,16 @@ export class ScatterChart extends AbstractCartesianChart {
   ) {
     super(data, config);
     super.constructComponentBuilders();
-    this.constructVisualMapBuilder(this.plotDatasets, config);
+    this.visualMapBuilder = this.constructVisualMapBuilder(
+      this.plotDatasets,
+      config,
+    );
   }
 
-  public constructVisualMapBuilder(
+  protected constructVisualMapBuilder(
     datasets: DatasetComponent[],
     config: ScatterChartConfig,
-  ): void {
+  ): ContinuousVisualMapBuilder | undefined {
     if (!config.isBubble || isNil(config.bubble)) {
       return;
     }
@@ -61,19 +65,15 @@ export class ScatterChart extends AbstractCartesianChart {
         symbol: config.bubble?.symbol,
       },
     };
-    this.visualMapBuilder = new ContinuousVisualMapBuilder(visualMapConfig);
+    return new ContinuousVisualMapBuilder(visualMapConfig);
   }
 
-  public compareConfig(newConfig: ScatterChartConfig): void {
+  protected updateChartByConfig(newConfig: ScatterChartConfig): void {
     const diff = new EntityDiff(this.config, newConfig);
     // TODO: Update chart based on diff;
     this.config = newConfig;
   }
-  public buildEChartOption(): echarts.EChartOption<
-    echarts.EChartOption.Series
-  > {
-    const xAxisGroupComponent = this.xAxisGroupBuilder.build();
-    const yAxisGroupComponent = this.yAxisGroupBuilder.build();
+  protected getChartComponents(): ChartComponent[] {
     const gridComponent = this.gridBuilder.build();
     const pageSize = this.gridBuilder.getCols() * this.gridBuilder.getRows();
     const pageIndex = this.config.pageIndex;
@@ -82,8 +82,11 @@ export class ScatterChart extends AbstractCartesianChart {
       pageSize,
       pageIndex,
     );
+    const xAxisGroupComponent = this.xAxisGroupBuilder.build(paginateDatasets);
+    const yAxisGroupComponent = this.yAxisGroupBuilder.build(paginateDatasets);
     const seriesGroupComponent = this.seriesGroupBuilder.build(
       paginateDatasets,
+      xAxisGroupComponent,
     );
     const titleGroupComponent = this.titleGroupBuilder.build(
       seriesGroupComponent,
@@ -91,7 +94,7 @@ export class ScatterChart extends AbstractCartesianChart {
     );
     const visualMapComponent = this.visualMapBuilder?.build();
 
-    const pipeline = compact([
+    return compact([
       paginateDatasets,
       xAxisGroupComponent,
       yAxisGroupComponent,
@@ -100,7 +103,5 @@ export class ScatterChart extends AbstractCartesianChart {
       titleGroupComponent,
       visualMapComponent,
     ]);
-
-    return this.generateEChartOptionWithPipeline(pipeline);
   }
 }

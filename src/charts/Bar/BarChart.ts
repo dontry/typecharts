@@ -7,8 +7,12 @@ import {
   AxisGroupBuilder,
   AxisGroupConfig,
 } from "@/components/Axis/AxisGroupBuilder";
-import { DatasetComponent } from "@/components/Dataset/DatasetComponent";
 import { DatasetBuilder } from "@/components/Dataset/DatasetBuilder";
+import { AbstractComponent, ChartOption } from "@/components/AbstractComponent";
+import { EChartOption } from "echarts";
+import { DatasetComponent } from "@/components/Dataset/DatasetComponent";
+import { ChartComponent } from "../AbstractChart";
+import { compact } from "lodash";
 
 export interface BarLabelConfig {
   show: boolean;
@@ -29,8 +33,7 @@ export class BarChart extends AbstractCartesianChart<BarChartConfig> {
     super.constructComponentBuilders();
   }
 
-  public constructXAxisGroupBuilder(
-    datasets: DatasetComponent[],
+  protected constructXAxisGroupBuilder(
     config: BarChartConfig,
     count: number,
   ): AxisGroupBuilder {
@@ -50,12 +53,11 @@ export class BarChart extends AbstractCartesianChart<BarChartConfig> {
       },
     };
 
-    const xAxisGroupBuilder = new AxisGroupBuilder(datasets, axisGroupConfig);
+    const xAxisGroupBuilder = new AxisGroupBuilder(axisGroupConfig);
     return xAxisGroupBuilder;
   }
 
-  public constructYAxisGroupBuilder(
-    datasets: DatasetComponent[],
+  protected constructYAxisGroupBuilder(
     config: BarChartConfig,
     count: number,
   ): AxisGroupBuilder {
@@ -72,19 +74,15 @@ export class BarChart extends AbstractCartesianChart<BarChartConfig> {
         },
       },
     };
-    const yAxisGroupBuilder = new AxisGroupBuilder(datasets, axisGroupConfig);
+    const yAxisGroupBuilder = new AxisGroupBuilder(axisGroupConfig);
     return yAxisGroupBuilder;
   }
 
-  public compareConfig(newConfig: BarChartConfig): void {
+  protected updateChartByConfig(newConfig: BarChartConfig): void {
     throw new Error("Method not implemented.");
   }
 
-  public buildEChartOption(): echarts.EChartOption<
-    echarts.EChartOption.Series
-  > {
-    const xAxisGroupComponent = this.xAxisGroupBuilder.build();
-    const yAxisGroupComponent = this.yAxisGroupBuilder.build();
+  protected getChartComponents(): ChartComponent[] {
     const gridComponent = this.gridBuilder.build();
     const pageSize = this.gridBuilder.getCols() * this.gridBuilder.getRows();
     const pageIndex = this.config.pageIndex;
@@ -93,24 +91,25 @@ export class BarChart extends AbstractCartesianChart<BarChartConfig> {
       pageSize,
       pageIndex,
     );
+    const xAxisGroupComponent = this.xAxisGroupBuilder.build(paginateDatasets);
+    const yAxisGroupComponent = this.yAxisGroupBuilder.build(paginateDatasets);
 
     const seriesGroupComponent = this.seriesGroupBuilder.build(
       paginateDatasets,
+      xAxisGroupComponent,
     );
     const titleGroupComponent = this.titleGroupBuilder.build(
       seriesGroupComponent,
       gridComponent,
     );
 
-    const pipeline = [
+    return compact([
       paginateDatasets,
       xAxisGroupComponent,
       yAxisGroupComponent,
       gridComponent,
       seriesGroupComponent,
       titleGroupComponent,
-    ];
-
-    return this.generateEChartOptionWithPipeline(pipeline);
+    ]);
   }
 }

@@ -71,8 +71,8 @@ describe("Axis", () => {
         isDimension: true,
       };
 
-      const xBuilder = new AxisGroupBuilder(plotDatasets, xConfig);
-      const xAxisGroupComponent = xBuilder.build();
+      const xBuilder = new AxisGroupBuilder(xConfig);
+      const xAxisGroupComponent = xBuilder.build(plotDatasets);
 
       expect(xAxisGroupComponent.length).toBe(1);
       if (xAxisGroupComponent[0]) {
@@ -97,8 +97,8 @@ describe("Axis", () => {
         scale: true,
       };
 
-      const yBuilder = new AxisGroupBuilder(plotDatasets, yConfig);
-      const yAxisGroupComponent = yBuilder.build();
+      const yBuilder = new AxisGroupBuilder(yConfig);
+      const yAxisGroupComponent = yBuilder.build(plotDatasets);
 
       expect(yAxisGroupComponent.length).toBe(1);
       if (yAxisGroupComponent[0]) {
@@ -154,8 +154,8 @@ describe("Axis", () => {
         scale: true,
         isDimension: true,
       };
-      const xBuilder = new AxisGroupBuilder(plotDatasets, xConfig);
-      const xAxisGroupComponent = xBuilder.build();
+      const xBuilder = new AxisGroupBuilder(xConfig);
+      const xAxisGroupComponent = xBuilder.build(plotDatasets);
 
       expect(xAxisGroupComponent.length).toBe(4);
       if (xAxisGroupComponent[0]) {
@@ -194,8 +194,8 @@ describe("Axis", () => {
         show: true,
         scale: true,
       };
-      const yBuilder = new AxisGroupBuilder(plotDatasets, yConfig);
-      const yAxisGroupComponent = yBuilder.build();
+      const yBuilder = new AxisGroupBuilder(yConfig);
+      const yAxisGroupComponent = yBuilder.build(plotDatasets);
 
       expect(yAxisGroupComponent.length).toBe(4);
       if (yAxisGroupComponent[0]) {

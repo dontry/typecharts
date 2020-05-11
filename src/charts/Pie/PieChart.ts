@@ -1,5 +1,5 @@
 import { BaseChartConfig } from "../BaseChartConfig";
-import { AbstractChart } from "../AbstractChart";
+import { AbstractChart, ChartComponent } from "../AbstractChart";
 import { SeriesType } from "@/components/Series/SeriesComponent";
 import { DataItem } from "@/types/DataItem";
 import { EChartOption } from "echarts";
@@ -15,6 +15,7 @@ import { SeriesGroupBuilder } from "@/components/Series/SeriesGroupBuilder";
 import { LayoutConfig } from "@/components/Layout/LayoutConfig";
 import { DataParam } from "@/types/Param";
 import { PieTitleGroupBuilder } from "./components/PieTitleGroupBuilder";
+import { compact } from "lodash";
 
 export type PieType = "round" | "radar" | "ring";
 
@@ -49,7 +50,7 @@ export class PieChart extends AbstractChart<PieChartConfig> {
     this.titleGroupBuilder = this.constructTitleGroupBuilder(this.config);
   }
 
-  public constructDatasetBuilder(
+  protected constructDatasetBuilder(
     data: DataItem[],
     config: PieChartConfig,
   ): DatasetBuilder {
@@ -62,7 +63,7 @@ export class PieChart extends AbstractChart<PieChartConfig> {
     return new DatasetBuilder(data, datasetConfig);
   }
 
-  public constructSeriesGroupBuilder(
+  protected constructSeriesGroupBuilder(
     seriesType: SeriesType,
     config: PieChartConfig,
   ): SeriesGroupBuilder {
@@ -76,17 +77,17 @@ export class PieChart extends AbstractChart<PieChartConfig> {
     return new PieSeriesGroupBuilder(seriesGroupConfig);
   }
 
-  public constructTitleGroupBuilder(
+  protected constructTitleGroupBuilder(
     config: PieChartConfig,
   ): PieTitleGroupBuilder {
     const titleGroupConfig = config.title;
     return new PieTitleGroupBuilder(titleGroupConfig);
   }
 
-  public compareConfig(newConfig: BaseChartConfig): void {
+  public updateChartByConfig(newConfig: BaseChartConfig): void {
     // TODO
   }
-  public buildEChartOption(): EChartOption {
+  protected getChartComponents(): ChartComponent[] {
     const gridComponent = this.gridBuilder.build();
     const pageSize = this.gridBuilder.getCols() * this.gridBuilder.getRows();
     const pageIndex = this.config.pageIndex;
@@ -103,8 +104,6 @@ export class PieChart extends AbstractChart<PieChartConfig> {
       this.config.layout,
     );
 
-    const pipeline = [gridComponent, seriesGroupComponent, titleGroupComponent];
-
-    return this.generateEChartOptionWithPipeline(pipeline);
+    return compact([gridComponent, seriesGroupComponent, titleGroupComponent]);
   }
 }

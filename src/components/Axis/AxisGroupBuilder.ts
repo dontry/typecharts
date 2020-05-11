@@ -54,10 +54,7 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
     return new NiceScale(min, max, onZero);
   }
 
-  constructor(
-    protected datasets: DatasetComponent[],
-    protected config: AxisGroupConfig,
-  ) {
+  constructor(protected config: AxisGroupConfig) {
     super(config);
   }
 
@@ -149,7 +146,7 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
     return axis === "x" && data != null;
   }
 
-  public build(): AxisComponent[] {
+  public build(datasets: DatasetComponent[]): AxisComponent[] {
     const {
       uniformMinmax,
       dataParams,
@@ -162,7 +159,7 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
       isDimension,
       name,
     } = this.config;
-    const facetNames = this.getFacetNamesFromDatasets(this.datasets);
+    const facetNames = this.getFacetNamesFromDatasets(datasets);
     const axisType = this.getAxisType(dataParams[0]);
 
     let overallNiceScale: NiceScale | undefined = undefined;
@@ -174,7 +171,7 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
       )
     ) {
       overallNiceScale = AxisGroupBuilder.createNiceScale(
-        this.datasets,
+        datasets,
         dataParams,
         onZero,
       );
@@ -191,13 +188,11 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
       }
 
       if (isDimension && axisType !== "value") {
-        const data = flatten(
-          this.datasets.map((dataset) => dataset.getSource()),
-        );
+        const data = flatten(datasets.map((dataset) => dataset.getSource()));
         axisData = this.calculateDimensionData(data, dataParams[0]);
       }
 
-      const dimensionName = this.datasets[0].getInfo().dimensionName;
+      const dimensionName = datasets[0].getInfo().dimensionName;
       const axisConfig: AxisComponentConfig = {
         data: axisData,
         type: axisType,
@@ -272,7 +267,7 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
       }),
     );
 
-    axisGroup = chain(this.datasets);
+    axisGroup = chain(datasets);
 
     return axisGroup;
   }

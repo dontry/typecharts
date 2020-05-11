@@ -9,9 +9,12 @@ import { SeriesType } from "@/components/Series/SeriesComponent";
 import { DatasetComponent } from "@/components/Dataset/DatasetComponent";
 import { DataItem } from "@/types/DataItem";
 import { EChartOption } from "echarts";
-import { AxisComponent } from "@/components/Axis/AxisComponent";
 import { AbstractComponent, ChartOption } from "@/components/AbstractComponent";
 import { isArray, isNil } from "lodash";
+
+export type ChartComponent =
+  | AbstractComponent<ChartOption>
+  | AbstractComponent<ChartOption>[];
 
 export abstract class AbstractChart<
   T extends BaseChartConfig = BaseChartConfig
@@ -24,7 +27,12 @@ export abstract class AbstractChart<
 
   constructor(protected data: DataItem[], protected config: T) {}
 
-  public constructComponentBuilders(): void {
+  public buildEChartOption(): EChartOption {
+    const components = this.getChartComponents();
+    return this.generateEChartOptionByComponents(components);
+  }
+
+  protected constructComponentBuilders(): void {
     this.datasetBuilder = this.constructDatasetBuilder(this.data, this.config);
     this.plotDatasets = this.datasetBuilder.getDatasets();
     const facetNames = DatasetBuilder.getNamesWithParam("facetName")(
@@ -36,7 +44,7 @@ export abstract class AbstractChart<
     );
   }
 
-  public constructGridBuilder(facetCount: number, config: T): GridBuilder {
+  protected constructGridBuilder(facetCount: number, config: T): GridBuilder {
     const gridConfig: GridConfig = {
       facetCount,
       ...config.layout,
@@ -44,7 +52,10 @@ export abstract class AbstractChart<
     return new GridBuilder(gridConfig);
   }
 
-  public constructDatasetBuilder(data: DataItem[], config: T): DatasetBuilder {
+  protected constructDatasetBuilder(
+    data: DataItem[],
+    config: T,
+  ): DatasetBuilder {
     const datasetConfig: DatasetConfig = {
       valueParams: config.valueParams,
       dimensionParam: config.dimensionParam,
@@ -56,19 +67,19 @@ export abstract class AbstractChart<
     return new DatasetBuilder(data, datasetConfig);
   }
 
-  public abstract constructSeriesGroupBuilder(
+  protected toJson(): string {
+    const option = this.buildEChartOption();
+    return JSON.stringify(option, null, 2);
+  }
+
+  protected abstract constructSeriesGroupBuilder(
     seriesType: SeriesType,
     config: T,
-    axisGroup: AxisComponent[],
     datasets?: DatasetComponent[],
   ): SeriesGroupBuilder;
 
-  protected generateEChartOptionWithPipeline(
-    pipeline: (
-      | AbstractComponent<ChartOption>
-      | AbstractComponent<ChartOption>[]
-      | null
-    )[],
+  protected generateEChartOptionByComponents(
+    pipeline: ChartComponent[],
   ): EChartOption {
     return pipeline.reduce(
       (
@@ -105,11 +116,7 @@ export abstract class AbstractChart<
     );
   }
 
-  public toJson(): string {
-    const option = this.buildEChartOption();
-    return JSON.stringify(option, null, 2);
-  }
+  protected abstract updateChartByConfig(newConfig: BaseChartConfig): void;
 
-  public abstract compareConfig(newConfig: BaseChartConfig): void;
-  public abstract buildEChartOption(): EChartOption;
+  protected abstract getChartComponents(): ChartComponent[];
 }

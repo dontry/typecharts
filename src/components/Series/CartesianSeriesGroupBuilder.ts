@@ -8,6 +8,8 @@ import {
 import { CartesianSeriesGroupConfig } from "./SeriesConfig";
 import { DataParam } from "@/types/Param";
 import { CartesianSeriesBuilder } from "./CartesianSeriesBuilder";
+import { AxisComponent } from "../Axis/AxisComponent";
+import { isArray, flatten } from "lodash";
 
 export class CartesianSeriesGroupBuilder extends SeriesGroupBuilder<
   Series,
