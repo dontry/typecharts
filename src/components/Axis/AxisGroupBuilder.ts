@@ -1,11 +1,5 @@
-import {
-  Axis,
-  AxisComponent,
-  AxisComponentConfig,
-  AxisDimension,
-  AxisType,
-} from "./AxisComponent";
-import { AxisBuilder } from "./AxisBuilder";
+import { Axis, AxisComponent, AxisDimension, AxisType } from "./AxisComponent";
+import { AxisBuilder, AxisBuilderConfig } from "./AxisBuilder";
 import { DataParam } from "@/types/Param";
 import { EChartOption } from "echarts";
 import { flow, map, uniq, sortBy, groupBy, toPairs } from "lodash/fp";
@@ -193,7 +187,7 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
       }
 
       const dimensionName = datasets[0].getInfo().dimensionName;
-      const axisConfig: AxisComponentConfig = {
+      const axisConfig: AxisBuilderConfig = {
         data: axisData,
         type: axisType,
         axisDimension: axis,
@@ -249,7 +243,7 @@ export class AxisGroupBuilder extends AbstractComponentBuilder<
           axisIndex++;
         }
 
-        const axisConfig: AxisComponentConfig = {
+        const axisConfig: AxisBuilderConfig = {
           data: axisData,
           type: axisType,
           axisDimension: axis,

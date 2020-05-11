@@ -1,16 +1,22 @@
 import { AbstractComponentBuilder } from "../AbstractComponentBuilder";
-import {
-  Axis,
-  AxisComponent,
-  AxisComponentConfig,
-  AxisDimension,
-} from "./AxisComponent";
+import { Axis, AxisComponent, AxisDimension, AxisType } from "./AxisComponent";
 import { Minmax } from "@/types/Minmax";
 import { format } from "d3-format";
 import { DataValue } from "@/types/DataItem";
+import { AxisConfig } from "./AxisConfig";
+
+export interface AxisBuilderConfig extends AxisConfig {
+  type: AxisType;
+  identifier?: string;
+  axisDimension: AxisDimension;
+  gridIndex: number;
+  count: number;
+  data?: DataValue[];
+  custom?: any;
+}
 
 export class AxisBuilder extends AbstractComponentBuilder<Axis, AxisComponent> {
-  constructor(protected config: AxisComponentConfig) {
+  constructor(protected config: AxisBuilderConfig) {
     super();
     const axis = config.axisDimension;
     this.initializeComponent(axis);

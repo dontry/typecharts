@@ -1,15 +1,18 @@
-import { SeriesGroupBuilder } from "./SeriesGroupBuilder";
+import { SeriesGroupBuilder, SeriesGroupConfig } from "./SeriesGroupBuilder";
 import { DatasetComponent } from "../Dataset/DatasetComponent";
-import {
-  Series,
-  SeriesComponent,
-  SeriesComponentConfig,
-} from "./SeriesComponent";
-import { CartesianSeriesGroupConfig } from "./SeriesConfig";
+import { Series, SeriesComponent } from "./SeriesComponent";
 import { DataParam } from "@/types/Param";
 import { CartesianSeriesBuilder } from "./CartesianSeriesBuilder";
 import { AxisComponent } from "../Axis/AxisComponent";
-import { isArray, flatten } from "lodash";
+import { Color } from "@/types/Color";
+import { SeriesBuilderConfig } from "./SeriesBuilder";
+
+export interface CartesianSeriesGroupConfig extends SeriesGroupConfig {
+  dimensionParam: DataParam;
+  axisGroup?: AxisComponent[];
+  colors?: Color[];
+  custom?: any;
+}
 
 export class CartesianSeriesGroupBuilder extends SeriesGroupBuilder<
   Series,
@@ -54,7 +57,7 @@ export class CartesianSeriesGroupBuilder extends SeriesGroupBuilder<
       const y = valueParam.name;
       const matchedColor = this.getMatchedColor(seriesIdentifier, colors);
 
-      const config: SeriesComponentConfig = {
+      const config: SeriesBuilderConfig = {
         type: type,
         name: seriesIdentifier,
         info: plotDataset.getInfo(),

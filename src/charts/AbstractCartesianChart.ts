@@ -6,8 +6,10 @@ import {
 import { AbstractChart } from "./AbstractChart";
 import { BaseCartesianChartConfig } from "./BaseCartesianChartConfig";
 import { SeriesType } from "@/components/Series/SeriesComponent";
-import { CartesianSeriesGroupConfig } from "@/components/Series/SeriesConfig";
-import { CartesianSeriesGroupBuilder } from "@/components/Series/CartesianSeriesGroupBuilder";
+import {
+  CartesianSeriesGroupBuilder,
+  CartesianSeriesGroupConfig,
+} from "@/components/Series/CartesianSeriesGroupBuilder";
 import { TitleGroupBuilder } from "@/components/Title/TitleGroupBuilder";
 import { DatasetComponent } from "@/components/Dataset/DatasetComponent";
 

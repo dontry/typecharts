@@ -1,6 +1,8 @@
-import { SeriesGroupBuilder } from "@/components/Series/SeriesGroupBuilder";
+import {
+  SeriesGroupBuilder,
+  SeriesGroupConfig,
+} from "@/components/Series/SeriesGroupBuilder";
 import { DatasetComponent } from "@/components/Dataset/DatasetComponent";
-import { SeriesGroupConfig } from "@/components/Series/SeriesConfig";
 import {
   PieSeriesComponentConfig,
   PieData,

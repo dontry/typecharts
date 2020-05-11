@@ -1,16 +1,12 @@
-import {
-  SeriesComponent,
-  SeriesComponentConfig,
-  Series,
-} from "./SeriesComponent";
+import { SeriesComponent, Series } from "./SeriesComponent";
 import { Encode } from "@/types/Encode";
-import { BaseSeriesBuilder } from "./SeriesBuilder";
+import { BaseSeriesBuilder, SeriesBuilderConfig } from "./SeriesBuilder";
 
 export class CartesianSeriesBuilder extends BaseSeriesBuilder<
   Series,
   SeriesComponent<Series>
 > {
-  constructor(protected config: SeriesComponentConfig) {
+  constructor(protected config: SeriesBuilderConfig) {
     super(config);
     this.initializeComponent();
   }

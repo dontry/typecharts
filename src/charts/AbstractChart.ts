@@ -3,7 +3,7 @@ import {
   DatasetBuilder,
   DatasetConfig,
 } from "@/components/Dataset/DatasetBuilder";
-import { GridBuilder, GridConfig } from "@/components/Grid/GridBuilder";
+import { GridBuilder, GridBuilderConfig } from "@/components/Grid/GridBuilder";
 import { SeriesGroupBuilder } from "@/components/Series/SeriesGroupBuilder";
 import { SeriesType } from "@/components/Series/SeriesComponent";
 import { DatasetComponent } from "@/components/Dataset/DatasetComponent";
@@ -45,7 +45,7 @@ export abstract class AbstractChart<
   }
 
   protected constructGridBuilder(facetCount: number, config: T): GridBuilder {
-    const gridConfig: GridConfig = {
+    const gridConfig: GridBuilderConfig = {
       facetCount,
       ...config.layout,
     };

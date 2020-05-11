@@ -1,7 +1,7 @@
 import { GridComponent, Grid } from "./GridComponent";
 import { AbstractComponentBuilder } from "../AbstractComponentBuilder";
 
-export interface GridConfig {
+export interface GridBuilderConfig {
   facetCount?: number;
   rows?: number;
   cols?: number;
@@ -17,12 +17,12 @@ export class GridBuilder extends AbstractComponentBuilder<
   private rows = -1;
   private cols = -1;
 
-  constructor(protected config: GridConfig) {
+  constructor(protected config: GridBuilderConfig) {
     super(config);
     this.initializeComponent(config);
   }
 
-  public initializeComponent(config: GridConfig): void {
+  public initializeComponent(config: GridBuilderConfig): void {
     const componentConfig = this.getGridLayout(config);
     this.component = new GridComponent(componentConfig);
   }
@@ -35,7 +35,7 @@ export class GridBuilder extends AbstractComponentBuilder<
     return this.cols;
   }
 
-  public setGrid(config: GridConfig): void {
+  public setGrid(config: GridBuilderConfig): void {
     const componentConfig = this.getGridLayout(config);
     this.component.config = componentConfig;
   }
@@ -44,7 +44,9 @@ export class GridBuilder extends AbstractComponentBuilder<
     return this.component;
   }
 
-  private getGridLayout(config: GridConfig): { rows: number; cols: number } {
+  private getGridLayout(
+    config: GridBuilderConfig,
+  ): { rows: number; cols: number } {
     const count = config.facetCount || 1;
     let { rows, cols } = config;
     if (!cols && !rows) {

@@ -4,9 +4,11 @@ import { SeriesType } from "@/components/Series/SeriesComponent";
 import { DataItem } from "@/types/DataItem";
 import { DatasetBuilder } from "@/components/Dataset/DatasetBuilder";
 import { EntityDiff } from "@/utils/EntityDiff";
-import { ContinuousVisualMapBuilder } from "@/components/VisualMap/ContinuousVisualMapBuilder";
+import {
+  ContinuousVisualMapBuilder,
+  VisualMapBuilderConfig,
+} from "@/components/VisualMap/ContinuousVisualMapBuilder";
 import { DatasetComponent } from "@/components/Dataset/DatasetComponent";
-import { VisualMapComponentConfig } from "@/components/VisualMap/VisualMapComponent";
 import { compact, isNil } from "lodash";
 import { AxisGroupBuilder } from "@/components/Axis/AxisGroupBuilder";
 import { ChartComponent } from "../AbstractChart";
@@ -54,7 +56,7 @@ export class ScatterChart extends AbstractCartesianChart {
     if (overallScale) {
       [min, max] = overallScale.calculate();
     }
-    const visualMapConfig: VisualMapComponentConfig = {
+    const visualMapConfig: VisualMapBuilderConfig = {
       min: min as number,
       max: max as number,
       minRange: minRange,

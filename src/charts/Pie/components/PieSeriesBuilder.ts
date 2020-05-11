@@ -1,7 +1,7 @@
 import { PieLayout, Layout } from "../PieLayout";
 import {
   PieSeriesComponent,
-  PieSeriesComponentConfig,
+  PieSeriesBuilderConfig,
   PieData,
 } from "./PieSeriesComponent";
 import { Series } from "@/components/Series/SeriesComponent";
@@ -10,9 +10,9 @@ import { BaseSeriesBuilder } from "@/components/Series/SeriesBuilder";
 export class PieSeriesBuilder extends BaseSeriesBuilder<
   Series,
   PieSeriesComponent,
-  PieSeriesComponentConfig
+  PieSeriesBuilderConfig
 > {
-  constructor(protected config: PieSeriesComponentConfig) {
+  constructor(protected config: PieSeriesBuilderConfig) {
     super(config);
   }
 

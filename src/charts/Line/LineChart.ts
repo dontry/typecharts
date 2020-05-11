@@ -3,15 +3,14 @@ import { EntityDiff } from "@/utils/EntityDiff";
 import { DatasetBuilder } from "@/components/Dataset/DatasetBuilder";
 import { AbstractCartesianChart } from "@/charts/AbstractCartesianChart";
 import { SeriesType } from "@/components/Series/SeriesComponent";
-import { EChartOption } from "echarts";
 import { BaseCartesianChartConfig } from "../BaseCartesianChartConfig";
 import { DatasetComponent } from "@/components/Dataset/DatasetComponent";
-import { AxisComponent } from "@/components/Axis/AxisComponent";
-import { CartesianSeriesGroupBuilder } from "@/components/Series/CartesianSeriesGroupBuilder";
-import { CartesianSeriesGroupConfig } from "@/components/Series/SeriesConfig";
+import {
+  CartesianSeriesGroupBuilder,
+  CartesianSeriesGroupConfig,
+} from "@/components/Series/CartesianSeriesGroupBuilder";
 import { Sampling } from "@/types/Sampling";
 import { mean, compact } from "lodash";
-import { AbstractComponent } from "@/components/AbstractComponent";
 import { ChartComponent } from "../AbstractChart";
 
 export interface LineChartConfig extends BaseCartesianChartConfig {

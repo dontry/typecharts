@@ -20,20 +20,6 @@ export interface Series {
   sampling?: "average" | "max" | "min" | "sum";
 }
 
-export interface SeriesComponentConfig extends BaseSeriesComponentConfig {
-  axisIndex: number;
-  encode: Encode;
-}
-
-export interface BaseSeriesComponentConfig {
-  type: SeriesType;
-  name: string;
-  info: PlotDatasetInfo;
-  datasetIndex: number;
-  color?: string;
-  custom?: any;
-}
-
 export class SeriesComponent<
   K extends Series = Series
 > extends AbstractComponent<K> {

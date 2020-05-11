@@ -1,16 +1,25 @@
 import { AbstractComponentBuilder } from "../AbstractComponentBuilder";
-import {
-  SeriesComponent,
-  Series,
-  SeriesType,
-  BaseSeriesComponentConfig,
-} from "./SeriesComponent";
+import { SeriesComponent, Series, SeriesType } from "./SeriesComponent";
 import { PlotDatasetInfo } from "../Dataset/DatasetComponent";
+import { Encode } from "@/types/Encode";
+
+export interface SeriesBuilderConfig extends BaseSeriesBuilderConfig {
+  axisIndex: number;
+  encode: Encode;
+}
+export interface BaseSeriesBuilderConfig {
+  type: SeriesType;
+  name: string;
+  info: PlotDatasetInfo;
+  datasetIndex: number;
+  color?: string;
+  custom?: any;
+}
 
 export class BaseSeriesBuilder<
   S extends Series = Series,
   K extends SeriesComponent<S> = SeriesComponent<S>,
-  T extends BaseSeriesComponentConfig = BaseSeriesComponentConfig
+  T extends BaseSeriesBuilderConfig = BaseSeriesBuilderConfig
 > extends AbstractComponentBuilder<S, K> {
   constructor(protected config: T) {
     super(config);

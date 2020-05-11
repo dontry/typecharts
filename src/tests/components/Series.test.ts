@@ -4,12 +4,14 @@ import fertility from "../fixtures/fertility.json";
 import { DatasetBuilder } from "@/components/Dataset/DatasetBuilder";
 import { DataParam } from "@/types/Param";
 import { FREQUENCY, NUMBER_AGGREGATION } from "@/types/Aggregation";
-import { CartesianSeriesGroupConfig } from "@/components/Series/SeriesConfig";
 import {
   AxisGroupBuilder,
   AxisGroupConfig,
 } from "@/components/Axis/AxisGroupBuilder";
-import { CartesianSeriesGroupBuilder } from "@/components/Series/CartesianSeriesGroupBuilder";
+import {
+  CartesianSeriesGroupBuilder,
+  CartesianSeriesGroupConfig,
+} from "@/components/Series/CartesianSeriesGroupBuilder";
 
 describe("SeriesGroupBuilder", () => {
   describe("CartesianSeriesGroupBuilder", () => {

@@ -6,17 +6,6 @@ export type RangeObject = VisualMap.RangeObject;
 export type PieceObject = VisualMap.PiecesObject;
 export type VisualMap = VisualMap.Continuous | VisualMap.Piecewise;
 
-export interface VisualMapComponentConfig {
-  min: number;
-  max: number;
-  show?: boolean;
-  minRange?: number;
-  maxRange?: number;
-  inRange?: RangeObject;
-  outRange?: RangeObject;
-  custom?: any;
-}
-
 export abstract class AbstractVisualMapComponent<T> extends AbstractComponent<
   T
 > {

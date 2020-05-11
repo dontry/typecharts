@@ -1,12 +1,16 @@
 import { AbstractComponentBuilder } from "../AbstractComponentBuilder";
-import { SeriesComponent, Series } from "./SeriesComponent";
-import { SeriesGroupConfig } from "./SeriesConfig";
+import { SeriesComponent, Series, SeriesType } from "./SeriesComponent";
 import { DatasetComponent } from "../Dataset/DatasetComponent";
 import { flatten, isArray, isNil } from "lodash";
 import { Color } from "@/types/Color";
 import { PlotIdentifier } from "../Dataset/PlotIdentifier";
 import { DataParam } from "@/types/Param";
 import { AxisComponent } from "../Axis/AxisComponent";
+
+export interface SeriesGroupConfig {
+  type: SeriesType;
+  valueParams: DataParam[];
+}
 
 export abstract class SeriesGroupBuilder<
   S extends Series = Series,

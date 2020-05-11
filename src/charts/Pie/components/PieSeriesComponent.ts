@@ -1,10 +1,7 @@
-import {
-  SeriesComponent,
-  Series,
-  BaseSeriesComponentConfig,
-} from "@/components/Series/SeriesComponent";
+import { SeriesComponent, Series } from "@/components/Series/SeriesComponent";
 import { PieType } from "../PieChart";
 import { Layout } from "../PieLayout";
+import { BaseSeriesBuilderConfig } from "@/components/Series/SeriesBuilder";
 
 interface PieStyle {
   radius: number[] | string[] | number | string;
@@ -17,7 +14,7 @@ export interface PieData {
   itemStyle?: { color: string };
 }
 
-export interface PieSeriesComponentConfig extends BaseSeriesComponentConfig {
+export interface PieSeriesBuilderConfig extends BaseSeriesBuilderConfig {
   rows: number;
   cols: number;
   data: PieData[];

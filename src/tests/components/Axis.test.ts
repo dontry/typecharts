@@ -1,4 +1,4 @@
-import { AxisBuilder } from "@/components/Axis/AxisBuilder";
+import { AxisBuilder, AxisBuilderConfig } from "@/components/Axis/AxisBuilder";
 import path from "path";
 import {
   AxisGroupBuilder,
@@ -8,13 +8,12 @@ import { parseCsvData } from "../fixtures/utils";
 import { DatasetBuilder } from "@/components/Dataset/DatasetBuilder";
 import { DataParam } from "@/types/Param";
 import { NUMBER_AGGREGATION } from "@/types/Aggregation";
-import { AxisComponentConfig } from "@/components/Axis/AxisComponent";
 
 describe("Axis", () => {
   describe("AxisBuilder", () => {
     it("should return axis", () => {
       const data = [1, 2, 3, 45, 5, 76, 8, 10];
-      const config: AxisComponentConfig = {
+      const config: AxisBuilderConfig = {
         name: "test",
         type: "value",
         axisDimension: "x",

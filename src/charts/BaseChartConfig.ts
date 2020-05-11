@@ -8,6 +8,7 @@ import { Grid } from "@/components/Grid/GridComponent";
 import { Axis } from "@/components/Axis/AxisComponent";
 import { Series } from "@/components/Series/SeriesComponent";
 import { Legend } from "@/components/Legend/LegendComponent";
+import { TooltipConfig } from "@/components/Tooltip/TooltipConfig";
 
 export type ChartOption = Dataset | Grid[] | Axis | Series[] | Legend;
 
@@ -23,5 +24,6 @@ export interface BaseChartConfig {
   title?: TitleConfig;
   color?: ColorConfig;
   legend?: LegendConfig;
+  tooltip?: TooltipConfig;
   custom?: any;
 }

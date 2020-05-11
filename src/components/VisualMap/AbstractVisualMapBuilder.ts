@@ -2,15 +2,15 @@ import { AbstractComponentBuilder } from "../AbstractComponentBuilder";
 import {
   AbstractVisualMapComponent,
   VisualMap,
-  VisualMapComponentConfig,
   RangeObject,
 } from "./VisualMapComponent";
 import { isNil } from "lodash";
+import { VisualMapBuilderConfig } from "./ContinuousVisualMapBuilder";
 
 export abstract class AbstractVisualMapBuilder<
   S extends VisualMap,
   K extends AbstractVisualMapComponent<S>,
-  T extends VisualMapComponentConfig = VisualMapComponentConfig
+  T extends VisualMapBuilderConfig = VisualMapBuilderConfig
 > extends AbstractComponentBuilder<S, K> {
   constructor(protected config: T) {
     super(config);
