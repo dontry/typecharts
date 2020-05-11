@@ -10,6 +10,7 @@ import { Dataset } from "@/components/Dataset/DatasetComponent";
 import { Series } from "@/components/Series/SeriesComponent";
 import { Axis } from "@/components/Axis/AxisComponent";
 import { VisualMap } from "@/components/VisualMap/VisualMapComponent";
+import { Tooltip } from "@/components/Tooltip/TooltipComponent";
 
 describe("Scatter Chart", () => {
   let rawData: DataItem[];
@@ -96,6 +97,9 @@ describe("Bubble chart", () => {
       bubble: {
         size: [1, 30],
       },
+      tooltip: {
+        show: true,
+      },
     };
     const chart = new ScatterChart(rawData, config);
     const option = chart.buildEChartOption();
@@ -107,6 +111,7 @@ describe("Bubble chart", () => {
     const xAxis = option.xAxis as Axis[];
     const yAxis = option.yAxis as Axis[];
     const visualMap = option.visualMap as VisualMap;
+    const tooltip = option.tooltip as Tooltip;
 
     expect(Array.isArray(option.dataset)).toBeTruthy();
     expect(dataset.length).toBe(1);
@@ -121,5 +126,7 @@ describe("Bubble chart", () => {
     expect(visualMap.show).toBe(false);
     expect(visualMap.min).toBe(-5000);
     expect(visualMap.max).toBe(5000);
+    expect(tooltip.trigger).toBe("item");
+    expect(tooltip.show).toBeTruthy();
   });
 });

@@ -4,8 +4,9 @@ import { Series } from "./Series/SeriesComponent";
 import { Dataset } from "./Dataset/DatasetComponent";
 import { Axis } from "./Axis/AxisComponent";
 import { Grid } from "./Grid/GridComponent";
+import { Tooltip } from "./Tooltip/TooltipComponent";
 
-export type ChartOption = Series | Dataset | Axis | Grid[];
+export type ChartOption = Series | Dataset | Axis | Grid[] | Tooltip;
 
 export abstract class AbstractComponent<T> implements EChartOptionInterface<T> {
   protected id: string;

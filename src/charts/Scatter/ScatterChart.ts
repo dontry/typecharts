@@ -30,6 +30,7 @@ export class ScatterChart extends AbstractCartesianChart {
   ) {
     super(data, config);
     super.constructComponentBuilders();
+    this.tooltipBuilder = this.constructTooltipBuilder(this.config, "item");
     this.visualMapBuilder = this.constructVisualMapBuilder(
       this.plotDatasets,
       config,
@@ -94,6 +95,7 @@ export class ScatterChart extends AbstractCartesianChart {
       seriesGroupComponent,
       gridComponent,
     );
+    const tooltipComponent = this.tooltipBuilder.build();
     const visualMapComponent = this.visualMapBuilder?.build();
 
     return compact([
@@ -103,6 +105,7 @@ export class ScatterChart extends AbstractCartesianChart {
       gridComponent,
       seriesGroupComponent,
       titleGroupComponent,
+      tooltipComponent,
       visualMapComponent,
     ]);
   }

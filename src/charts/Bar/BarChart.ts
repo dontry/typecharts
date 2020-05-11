@@ -8,9 +8,6 @@ import {
   AxisGroupConfig,
 } from "@/components/Axis/AxisGroupBuilder";
 import { DatasetBuilder } from "@/components/Dataset/DatasetBuilder";
-import { AbstractComponent, ChartOption } from "@/components/AbstractComponent";
-import { EChartOption } from "echarts";
-import { DatasetComponent } from "@/components/Dataset/DatasetComponent";
 import { ChartComponent } from "../AbstractChart";
 import { compact } from "lodash";
 
@@ -31,6 +28,7 @@ export class BarChart extends AbstractCartesianChart<BarChartConfig> {
   constructor(protected data: DataItem[], protected config: BarChartConfig) {
     super(data, config);
     super.constructComponentBuilders();
+    this.tooltipBuilder = this.constructTooltipBuilder(this.config, "item");
   }
 
   protected constructXAxisGroupBuilder(
@@ -98,6 +96,7 @@ export class BarChart extends AbstractCartesianChart<BarChartConfig> {
       paginateDatasets,
       xAxisGroupComponent,
     );
+    const tooltipComponent = this.tooltipBuilder.build();
     const titleGroupComponent = this.titleGroupBuilder.build(
       seriesGroupComponent,
       gridComponent,
@@ -107,6 +106,7 @@ export class BarChart extends AbstractCartesianChart<BarChartConfig> {
       paginateDatasets,
       xAxisGroupComponent,
       yAxisGroupComponent,
+      tooltipComponent,
       gridComponent,
       seriesGroupComponent,
       titleGroupComponent,

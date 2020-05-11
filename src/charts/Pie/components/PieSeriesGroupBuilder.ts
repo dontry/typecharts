@@ -4,7 +4,7 @@ import {
 } from "@/components/Series/SeriesGroupBuilder";
 import { DatasetComponent } from "@/components/Dataset/DatasetComponent";
 import {
-  PieSeriesComponentConfig,
+  PieSeriesBuilderConfig,
   PieData,
   PieSeriesComponent,
 } from "./PieSeriesComponent";
@@ -52,7 +52,7 @@ export class PieSeriesGroupBuilder extends SeriesGroupBuilder<
     );
 
     const layout = config.layout || { rows: 1, cols: 1 };
-    const componentConfig: PieSeriesComponentConfig = {
+    const componentConfig: PieSeriesBuilderConfig = {
       type: config.type,
       name: seriesName,
       info: plotDataset.getInfo(),

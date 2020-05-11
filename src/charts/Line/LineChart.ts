@@ -25,6 +25,7 @@ export class LineChart extends AbstractCartesianChart<LineChartConfig> {
   constructor(protected data: DataItem[], protected config: LineChartConfig) {
     super(data, config);
     super.constructComponentBuilders();
+    this.tooltipBuilder = this.constructTooltipBuilder(this.config, "axis");
   }
 
   protected updateChartByConfig(newConfig: LineChartConfig): void {
@@ -72,6 +73,7 @@ export class LineChart extends AbstractCartesianChart<LineChartConfig> {
       paginateDatasets,
       xAxisGroupComponent,
     );
+    const tooltipComponent = this.tooltipBuilder.build();
     const titleGroupComponent = this.titleGroupBuilder.build(
       seriesGroupComponent,
       gridComponent,
@@ -82,8 +84,9 @@ export class LineChart extends AbstractCartesianChart<LineChartConfig> {
       xAxisGroupComponent,
       yAxisGroupComponent,
       gridComponent,
-      titleGroupComponent,
       seriesGroupComponent,
+      tooltipComponent,
+      titleGroupComponent,
     ]);
   }
 

@@ -8,16 +8,6 @@ export type Axis = EChartOption.BasicComponents.CartesianAxis;
 export type AxisType = "category" | "time" | "value";
 export type AxisDimension = "x" | "y";
 
-export interface AxisComponentConfig extends AxisConfig {
-  type: AxisType;
-  identifier?: string;
-  axisDimension: AxisDimension;
-  gridIndex: number;
-  count: number;
-  data?: DataValue[];
-  custom?: any;
-}
-
 export class AxisComponent extends AbstractComponent<Axis> {
   public static readonly DEFAULT_NAME_GAP = 27;
 

@@ -12,6 +12,13 @@ import {
 } from "@/components/Series/CartesianSeriesGroupBuilder";
 import { TitleGroupBuilder } from "@/components/Title/TitleGroupBuilder";
 import { DatasetComponent } from "@/components/Dataset/DatasetComponent";
+import {
+  TooltipBuilder,
+  TooltipFormatterConfig,
+  TooltipBuilderConfig,
+  TooltipFormatterSchema,
+} from "@/components/Tooltip/TooltipBuilder";
+import { Trigger } from "@/components/Tooltip/TooltipConfig";
 
 export abstract class AbstractCartesianChart<
   T extends BaseCartesianChartConfig = BaseCartesianChartConfig
@@ -19,6 +26,7 @@ export abstract class AbstractCartesianChart<
   protected xAxisGroupBuilder!: AxisGroupBuilder;
   protected yAxisGroupBuilder!: AxisGroupBuilder;
   protected titleGroupBuilder!: TitleGroupBuilder;
+  protected tooltipBuilder!: TooltipBuilder;
 
   constructor(protected data: DataItem[], protected config: T) {
     super(data, config);
@@ -77,9 +85,40 @@ export abstract class AbstractCartesianChart<
     return yAxisGroupBuilder;
   }
 
+  protected constructTooltipBuilder(
+    config: BaseCartesianChartConfig,
+    trigger: Trigger = "axis",
+  ): TooltipBuilder {
+    const { dimensionParam, valueParams, tooltip } = this.config;
+    const schema: TooltipFormatterSchema[] = [
+      {
+        name: config.xAxis.name || "x",
+        value: dimensionParam.name,
+      },
+      {
+        name: config.yAxis.name || "y",
+        value: valueParams.map((param) => param.name).join(", "),
+      },
+    ];
+    const tooltipFormatterConfig: TooltipFormatterConfig = {
+      showSeriesName: true,
+    };
+    const formatter = TooltipBuilder.getTooltipFormatter(
+      schema,
+      tooltipFormatterConfig,
+    );
+    const tooltipBuilderConfig: TooltipBuilderConfig = {
+      show: !!tooltip,
+      trigger: trigger,
+      formatter: formatter,
+    };
+    return new TooltipBuilder(tooltipBuilderConfig);
+  }
+
   protected constructSeriesGroupBuilder(
     seriesType: SeriesType,
     config: T,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     datasets?: DatasetComponent[],
   ): CartesianSeriesGroupBuilder {
     const seriesGroupConfig: CartesianSeriesGroupConfig = {
